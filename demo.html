@@ -1,0 +1,1232 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>西米 · 全流程互动体验</title>
+<style>
+:root{--paper:#F4F0E4;--card:#FBF6EA;--ink:#3A3036;--ink2:#6F636B;--ink3:#8C7F87;--seal:#B03A2E;--edge:rgba(120,90,70,.16);--gold:#B08D3E;--green:#3E7D5B}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#2E2824;font-family:PingFang SC,-apple-system,sans-serif;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:18px 0}
+#phone{width:390px;height:800px;background:var(--paper);border-radius:34px;overflow:hidden;position:relative;box-shadow:0 24px 70px rgba(0,0,0,.55);display:flex;flex-direction:column}
+#pages{flex:1;position:relative;overflow:hidden}
+.page{position:absolute;inset:0;overflow-y:auto;display:none;background:var(--paper)}
+.page.on{display:block;animation:pin .22s}
+@keyframes pin{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.page.on{animation:none}}
+.nb-bar{padding:14px 18px 10px;font-size:16px;font-weight:600;color:var(--ink);text-align:center;border-bottom:1px solid var(--edge);position:sticky;top:0;background:var(--paper);z-index:5}
+.nb-bar .back{position:absolute;left:14px;top:12px;font-size:14px;color:var(--ink2);cursor:pointer}
+.nb-bar .sub{display:block;font-size:10px;font-weight:400;color:var(--ink3);letter-spacing:.2em}
+/* onboard */
+#p-onboard{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 34px;gap:14px}
+.seal-lg{width:96px;height:96px;background:var(--seal);color:#F6F1E6;border-radius:6px;font-family:Songti SC,STSong,serif;font-size:40px;font-weight:900;display:flex;align-items:center;justify-content:center;letter-spacing:3px;transform:rotate(-3deg);box-shadow:3px 4px 0 rgba(46,40,36,.15)}
+.on-t1{font-family:Songti SC,STSong,serif;font-size:27px;font-weight:900;letter-spacing:.08em;margin-top:10px}
+.on-t2{color:var(--ink2);font-size:14px;line-height:1.8}
+.on-opts{display:flex;flex-direction:column;gap:10px;width:100%;margin-top:16px}
+.on-opt{border:1px solid var(--edge);background:var(--card);border-radius:10px;padding:13px;font-size:15px;cursor:pointer;color:var(--ink)}
+.on-opt:active{background:#F1E9D6}
+.enter-btn{margin-top:20px;width:80%;height:46px;border-radius:23px;background:var(--seal);color:#F6F1E6;font-size:16px;letter-spacing:.3em;text-indent:.3em;border:none;cursor:pointer}
+/* home */
+.hero{height:250px;position:relative;overflow:hidden;border-radius:0 0 22px 22px;background:linear-gradient(175deg,#DCE5DA,#E9E9DC 55%,#F4F0E4)}
+.hero:before{content:'';position:absolute;inset:0;background:radial-gradient(130% 60% at 80% 100%,rgba(62,125,91,.18),transparent 60%),radial-gradient(90% 40% at 10% 0%,rgba(255,255,255,.5),transparent)}
+.hero .hx{position:absolute;left:22px;top:34px}
+.hero .hx b{font-family:Songti SC,STSong,serif;font-size:26px;letter-spacing:.3em;color:var(--seal)}
+.hero .hx i{display:block;font-style:normal;font-size:10px;letter-spacing:.5em;color:var(--ink2);margin-top:2px}
+.hero .hx em{display:block;font-style:normal;font-family:Songti SC,STSong,serif;font-size:17px;color:var(--ink);margin-top:44px;letter-spacing:.04em}
+.hwrap{padding:16px 18px 8px}
+.hq{background:var(--card);border:1px solid var(--edge);border-radius:14px;padding:14px 16px;position:relative;box-shadow:0 4px 14px rgba(58,48,54,.05)}
+.hq .lb{font-size:10px;letter-spacing:.28em;color:var(--seal);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.hq .lb .sh{color:var(--ink2);letter-spacing:0;border:1px solid var(--edge);border-radius:999px;padding:2px 10px;font-size:11px;cursor:pointer}
+.hq .qt{font-family:Songti SC,STSong,serif;font-size:16px;line-height:1.8;margin-top:8px}
+.hq .au{font-size:12px;color:var(--ink3);margin-top:6px}
+.hgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px 18px}
+.hcell{background:var(--card);border:1px solid var(--edge);border-radius:14px;padding:16px;font-size:14px;cursor:pointer}
+.hcell b{display:block;font-size:15px;margin-bottom:3px}
+.hcell span{font-size:12px;color:var(--ink2)}
+.hcell .ic{font-size:20px;margin-bottom:8px;display:block}
+/* hero ximi orb */
+.orb{width:64px;height:64px;border-radius:50%;background:radial-gradient(circle at 32% 30%,#B9A6F2,#7C5CD6 60%,#5A3FB0);box-shadow:0 6px 18px rgba(122,92,214,.45),inset -6px -8px 14px rgba(255,255,255,.25);position:relative;cursor:pointer}
+.orb:after{content:'◡ ‿ ◡';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;letter-spacing:-1px}
+.orb-row{display:flex;align-items:flex-end;gap:10px;padding:0 18px 6px;margin-top:-46px;position:relative;z-index:2}
+.orb-bub{background:#FFFDF4;border:1px solid var(--edge);border-radius:4px 14px 14px 14px;padding:10px 14px;font-size:13px;color:var(--ink);box-shadow:0 4px 12px rgba(58,48,54,.06);flex:1;cursor:pointer}
+.orb-meta{padding:6px 18px 0;font-size:11px;color:var(--ink3);display:flex;gap:6px;align-items:center}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block}
+/* content */
+.gr-theme{margin:16px 18px;background:var(--card);border:1px solid var(--edge);border-radius:14px;padding:16px 18px}
+.gr-theme .lb{font-size:10px;letter-spacing:.24em;color:var(--seal);font-weight:600}
+.gr-theme .tb{font-family:Songti SC,STSong,serif;font-size:21px;font-weight:400;line-height:1.35;margin-top:6px}
+.gr-theme .tm{font-size:11px;color:var(--ink3);margin-top:8px}
+.nb{margin:0 18px;background:var(--card);border:1px solid var(--edge);border-radius:6px 14px 14px 14px;padding:14px 16px;cursor:pointer;position:relative}
+.nb:before{content:'';position:absolute;top:-8px;left:20px;width:64px;height:14px;background:rgba(226,205,160,.9);transform:rotate(-3deg);border-radius:2px}
+.nb .nb-t{font-family:Songti SC,STSong,serif;font-size:17px;font-weight:700}
+.nb .nb-t span{font-size:10px;color:var(--ink3);letter-spacing:.2em;font-weight:400;margin-left:8px}
+.nb .nb-line{font-size:14px;color:var(--ink2);margin:8px 0 10px}
+.nb .nb-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--ink3)}
+.nb .nb-go{color:var(--seal)}
+.col-card{margin:12px 18px;background:var(--card);border:1px solid var(--edge);border-radius:14px;overflow:hidden;cursor:pointer}
+.col-card img,.col-card .colbg{width:100%;height:110px;object-fit:cover;display:block;background:linear-gradient(160deg,#D8E2D4,#EFE9D8)}
+.col-card .cb{padding:12px 16px}
+.col-card .cb b{font-size:15px}
+.col-card .cb p{font-size:12px;color:var(--ink2);margin:4px 0 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+/* grow */
+.grow-hero{margin:16px 18px;border-radius:16px;height:210px;position:relative;overflow:hidden;background:radial-gradient(120% 90% at 70% 10%,#3A3550,#191A26 70%)}
+.grow-hero .gt{position:absolute;left:20px;top:22px;color:#E8E2D2;font-family:Songti SC,STSong,serif}
+.grow-hero .gt b{font-size:22px;display:block}
+.grow-hero .gt span{font-size:11px;color:#B9B2A0;letter-spacing:.2em}
+.grow-hero .gl{position:absolute;left:20px;bottom:22px;color:#E8E2D2}
+.grow-hero .gl b{font-size:30px}
+.grow-hero .gl span{font-size:12px;color:#B9B2A0}
+.lamps{position:absolute;inset:0}
+.lamp{position:absolute;width:7px;height:7px;border-radius:50%;background:#D9B96A;box-shadow:0 0 8px 2px rgba(217,185,106,.55);opacity:.9}
+.lamp.dim{background:#4A4A5A;box-shadow:none;opacity:.4}
+.gstats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 18px}
+.gstat{background:var(--card);border:1px solid var(--edge);border-radius:14px;text-align:center;padding:14px 0}
+.gstat b{font-size:24px;color:var(--seal);font-family:Songti SC,STSong,serif}
+.gstat span{display:block;font-size:11px;color:var(--ink2);margin-top:3px}
+.tl{margin:0 18px 20px}
+.tl-item{border-left:2px solid var(--edge);padding:0 0 16px 14px;position:relative}
+.tl-item:before{content:'';position:absolute;left:-5px;top:4px;width:8px;height:8px;border-radius:50%;background:var(--card);border:2px solid var(--ink3)}
+.tl-item .tt{font-size:11px;color:var(--ink3)}
+.tl-item .tx{font-size:14px;margin-top:3px}
+.tl-item .tg{font-size:11px;color:var(--gold);margin-top:3px}
+/* me */
+.me-card{margin:16px 18px;background:var(--card);border:1px solid var(--edge);border-radius:14px;padding:18px;display:flex;gap:14px;align-items:center}
+.me-av{width:58px;height:58px;border-radius:50%;background:linear-gradient(150deg,#D8CDE0,#C7B9D8);display:flex;align-items:center;justify-content:center;font-size:24px}
+.me-card b{font-size:17px}
+.me-card span{display:block;font-size:12px;color:var(--ink2);margin-top:3px}
+.member{margin:0 18px 14px;background:linear-gradient(150deg,#3A3036,#241F1D);color:#E8D9B4;border-radius:14px;padding:16px 18px;font-size:13px}
+.member b{font-size:15px;color:#F0E6D2;display:block;margin-bottom:3px}
+.mrows{margin:0 18px}
+.mrow{display:flex;justify-content:space-between;align-items:center;padding:15px 4px;border-bottom:1px solid var(--edge);font-size:14px;cursor:pointer}
+.mrow:after{content:'›';color:var(--ink3)}
+.mrow span{color:var(--ink3);font-size:12px}
+/* chat */
+.modebar{display:flex;gap:18px;padding:10px 18px;font-size:14px;color:var(--ink3);border-bottom:1px solid var(--edge);position:sticky;top:49px;background:var(--paper);z-index:5}
+.modebar span{cursor:pointer;padding-bottom:6px}
+.modebar span.on{color:var(--ink);font-weight:600;border-bottom:2px solid var(--seal)}
+#msgs{padding:14px 16px 8px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:78%;padding:11px 14px;border-radius:14px;font-size:14px;line-height:1.7;white-space:pre-wrap}
+.msg.ai{background:var(--card);border:1px solid var(--edge);border-radius:4px 14px 14px 14px;align-self:flex-start}
+.msg.user{background:#EFE3D2;border-radius:14px 4px 14px 14px;align-self:flex-end}
+.msg.role{background:#F3E4D8;border:1px solid rgba(176,141,62,.35);border-radius:4px 14px 14px 14px;align-self:flex-start}
+.msg.role .rt{display:block;font-size:10px;color:var(--gold);letter-spacing:.2em;margin-bottom:4px}
+.typing{align-self:flex-start;color:var(--ink3);font-size:13px;padding:4px 2px}
+.chips{align-self:flex-start;display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid rgba(176,141,62,.5);color:var(--ink);border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer;background:#FDF8EC}
+.chip.coach{border-color:rgba(176,141,62,.8)}
+.nudge{align-self:stretch;background:#F3E4D8;border-radius:12px;padding:12px 14px;font-size:13px;display:flex;gap:10px;align-items:center}
+.nudge button{border:none;background:var(--seal);color:#fff;border-radius:999px;padding:6px 12px;font-size:12px;cursor:pointer;flex:none}
+#composer{display:flex;gap:10px;padding:10px 14px 14px;border-top:1px solid var(--edge);background:var(--paper)}
+#composer input{flex:1;border:1px solid var(--edge);border-radius:999px;height:40px;padding:0 16px;font-size:14px;background:#FFFDF4;color:var(--ink);outline:none}
+#composer button{width:40px;height:40px;border-radius:50%;background:var(--seal);color:#fff;border:none;font-size:17px;cursor:pointer}
+/* crisis card */
+#crisis{position:absolute;inset:0;background:rgba(46,40,36,.45);display:none;align-items:center;justify-content:center;z-index:50;padding:30px}
+#crisis.on{display:flex}
+#crisis .cc{background:var(--card);border-radius:18px;padding:26px 22px;text-align:center;width:100%}
+#crisis .cc .h{font-size:17px;font-weight:700;margin:12px 0 8px}
+#crisis .cc p{font-size:13px;color:var(--ink2);line-height:1.9;margin:0}
+#crisis .cc .hot{font-size:15px;font-weight:700;margin:10px 0 16px}
+#crisis .cc .call{display:block;background:var(--seal);color:#fff;border-radius:12px;padding:13px;font-size:15px;text-decoration:none;cursor:pointer}
+#crisis .cc .calm{margin-top:10px;color:var(--ink3);font-size:13px;cursor:pointer;padding:8px}
+#crisis .cc .calm.dis{opacity:.45;cursor:not-allowed}
+#crisis .cc .safe{font-size:11px;color:var(--ink3);margin-top:10px}
+/* overlays: sheet */
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--card);border-radius:18px 18px 0 0;padding:16px 18px 22px;transform:translateY(105%);transition:transform .25s;z-index:40;box-shadow:0 -8px 30px rgba(46,40,36,.18)}
+.sheet.on{transform:none}
+.sheet h4{margin:0 0 4px;font-size:16px}
+.sheet .sh-sub{font-size:12px;color:var(--ink2);margin-bottom:12px}
+.sheet textarea{width:100%;height:110px;border:1px solid var(--edge);border-radius:10px;padding:10px;font-size:14px;font-family:inherit;background:#FFFDF4;resize:none;outline:none}
+.sheet .schips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.sheet .schip{font-size:12px;border:1px solid var(--edge);border-radius:999px;padding:4px 11px;cursor:pointer;color:var(--ink2)}
+.sheet .schip.on{border-color:var(--seal);color:var(--seal)}
+.btn{width:100%;height:44px;border-radius:22px;background:var(--seal);color:#fff;border:none;font-size:15px;cursor:pointer;margin-top:12px}
+.btn.ghost{background:none;border:1px solid var(--edge);color:var(--ink2)}
+/* consultants / cdetail / report */
+.c-card{margin:14px 18px;background:var(--card);border:1px solid var(--edge);border-radius:14px;padding:16px;display:flex;gap:14px;cursor:pointer;align-items:center}
+.c-av{width:56px;height:56px;border-radius:10px;flex:none;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;font-family:Songti SC,STSong,serif}
+.c-card b{font-size:16px}
+.c-card .ct{font-size:11px;color:var(--ink2);margin-top:2px}
+.c-card .cp{font-size:13px;color:var(--seal);margin-top:4px;font-weight:600}
+.cd-head{text-align:center;padding:24px 18px 14px}
+.cd-av{width:86px;height:86px;border-radius:14px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:34px;color:#fff;font-family:Songti SC,STSong,serif}
+.cd-head h3{margin:0;font-size:19px}
+.cd-head .ct{font-size:12px;color:var(--ink2);margin-top:4px}
+.cd-stats{display:flex;justify-content:center;gap:26px;margin:14px 0}
+.cd-stats div{text-align:center}
+.cd-stats b{font-size:17px;display:block}
+.cd-stats span{font-size:11px;color:var(--ink3)}
+.cd-body{margin:0 18px;background:var(--card);border:1px solid var(--edge);border-radius:14px;padding:14px 16px;font-size:13px;line-height:1.9;color:var(--ink2)}
+.cd-tags{display:flex;flex-wrap:wrap;gap:8px;margin:12px 18px}
+.cd-tags span{font-size:11px;border:1px solid var(--edge);border-radius:999px;padding:3px 10px;color:var(--ink2)}
+.slots{display:flex;flex-wrap:wrap;gap:9px;margin:10px 18px}
+.slot{border:1px solid var(--edge);border-radius:8px;padding:8px 13px;font-size:13px;cursor:pointer;background:var(--card);color:var(--ink)}
+.slot.on{border-color:var(--seal);color:var(--seal);background:#F9EDE4}
+.rep{margin:16px 18px;background:var(--card);border:1px solid var(--edge);border-radius:16px;padding:20px 18px}
+.rep .rh{text-align:center;border-bottom:1px solid var(--edge);padding-bottom:14px;margin-bottom:14px}
+.rep .rh .sh{font-size:26px}
+.rep .rh b{font-family:Songti SC,STSong,serif;font-size:19px;display:block;margin-top:6px}
+.rep .rh span{font-size:10px;letter-spacing:.3em;color:var(--ink3)}
+.rep .sec{margin-top:13px}
+.rep .sec .sl{font-size:12px;color:var(--gold);font-weight:600}
+.rep .sec p{margin:5px 0 0;font-size:13px;line-height:1.8}
+.rep .emotions{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.rep .emotions span{border:1px solid var(--edge);background:#F1E9D6;border-radius:8px;padding:4px 12px;font-size:13px}
+.rep .ubar{height:6px;border-radius:3px;background:#EDE5D2;overflow:hidden;margin-top:7px}
+.rep .ubar i{display:block;height:100%;background:var(--seal);border-radius:3px}
+.rep .disc{font-size:11px;color:var(--ink3);text-align:center;margin-top:14px}
+/* pay sheet */
+.paysum{display:flex;justify-content:space-between;font-size:14px;padding:8px 0}
+.paysum.total{font-weight:700;border-top:1px dashed var(--edge);margin-top:6px;padding-top:12px}
+.paysum.total b{color:var(--seal);font-size:18px}
+/* toast */
+#toast{position:absolute;left:50%;bottom:110px;transform:translateX(-50%);background:rgba(46,40,36,.92);color:#F6F1E6;font-size:13px;border-radius:999px;padding:9px 18px;opacity:0;transition:opacity .25s;z-index:80;pointer-events:none;max-width:82%;text-align:center}
+#toast.on{opacity:1}
+/* tabbar */
+#tabbar{display:flex;border-top:1px solid var(--edge);background:var(--card);padding:8px 0 14px}
+#tabbar .tb-i{flex:1;text-align:center;font-size:11px;color:var(--ink3);cursor:pointer}
+#tabbar .tb-i .ic{font-size:21px;display:block;margin-bottom:1px}
+#tabbar .tb-i.on{color:var(--seal);font-weight:600}
+.hidden{display:none!important}
+</style></head><body>
+<div id="phone">
+<div id="pages">
+  <section class="page" id="p-onboard"></section>
+  <section class="page" id="p-home"></section>
+  <section class="page" id="p-chat"><div class="nb-bar">西米<span class="sub">24H 倾听中 · 点气泡聊聊</span></div>
+    <div class="modebar"><span data-mode="friend" class="on">闺蜜</span><span data-mode="coach">教练</span></div>
+    <div id="msgs"></div>
+    <div id="composer"><input id="chat-input" placeholder="想到哪，说到哪…"><button id="send-btn">↑</button></div>
+  </section>
+  <section class="page" id="p-content"><div class="nb-bar">每日成长</div><div id="content-body"></div></section>
+  <section class="page" id="p-grow"><div class="nb-bar">我的变化</div><div id="grow-body"></div></section>
+  <section class="page" id="p-me"><div class="nb-bar">我的</div><div id="me-body"></div></section>
+  <section class="page" id="p-consultants"><div class="nb-bar"><span class="back" data-go="home">‹ 返回</span>咨询师</div><div id="cons-body"></div></section>
+  <section class="page" id="p-cdetail"><div class="nb-bar"><span class="back" data-go="consultants">‹ 返回</span>咨询师详情</div><div id="cd-body"></div></section>
+  <section class="page" id="p-prediag"><div class="nb-bar"><span class="back" data-go="home">‹ 返回</span>预诊断</div><div id="pd-body" style="padding:0 0 20px"></div></section>
+  <section class="page" id="p-report"><div class="nb-bar">预诊断完成</div><div id="rp-body"></div></section>
+</div>
+<div id="crisis"><div class="cc"><div class="sh" style="font-size:26px">♡</div><div class="h">您的情况可能需要专业支持</div><p>我们已为你预留紧急咨询通道<br>24小时心理援助热线</p><div class="hot">400-161-9995</div><a class="call" href="tel:4001619995">立即拨打热线</a><div class="calm dis" id="calm-btn">我先冷静一下</div><div class="safe">为保障你的安全，此提醒暂不可关闭</div></div></div>
+<div class="sheet" id="jnl-sheet"><h4>情绪手记</h4><div class="sh-sub">今天想记下什么？不用条理，写乱一点也行。</div><div class="schips" id="jnl-chips"></div><textarea id="jnl-text" placeholder="今天……"></textarea><button class="btn" id="jnl-send">写完，点亮一盏灯</button><button class="btn ghost" id="jnl-close">先不写了</button></div>
+<div class="sheet" id="pay-sheet"><h4>确认订单</h4><div class="sh-sub" id="pay-who"></div><div class="paysum"><span>预约时段</span><span id="pay-slot"></span></div><div class="paysum"><span>诊断报告</span><span>已附 · 咨询师可提前了解</span></div><div class="paysum total"><span>合计</span><b id="pay-amt"></b></div><button class="btn" id="pay-do" style="background:var(--green)">微信支付</button><div class="sh-sub" style="margin-top:10px;text-align:center">支付成功后跳转企业微信，咨询师确认后服务开始</div><button class="btn ghost" id="pay-close">再想想</button></div>
+<div id="toast"></div>
+<div id="tabbar">
+<div class="tb-i on" data-tab="home"><span class="ic">💬</span>西米</div>
+<div class="tb-i" data-tab="content"><span class="ic">🤍</span>疗愈</div>
+<div class="tb-i" data-tab="grow"><span class="ic">✨</span>变化</div>
+<div class="tb-i" data-tab="me"><span class="ic">👤</span>我的</div>
+</div>
+</div>
+<script>
+window.wx={request(){},getStorageSync(){return null},setStorageSync(){},getSystemInfoSync(){return{windowWidth:390}}}
+window.require=function(n){if(n.indexOf("stores/user")>=0)return{get(){return null},set(){}};if(n.indexOf("modules/crisis")>=0)return window.__crisisMod||{};return {};};
+const module={exports:{}};const exports=module.exports;
+/* 西米对话剧本（2026-10-09 从甲方排版基准原型移植）
+ *
+ * 来源：backend/docs/02-设计/甲方排版基准-西米演示-2026-10-09/西米-交互演示-粉蓝水彩版.html
+ *      原型的 script 段是一堆 async 函数（内部直接操作 DOM）。此处**改写成纯数据 + 小 runner**：
+ *        - 分支 = 数据节点，页面负责渲染（可 jest 直接断言，不需要模拟器）
+ *        - 副作用（开浮层/点灯/toast/陪伴承接/切模式）变成声明式字段，由页面执行
+ *      文案逐字照抄，未改一字。
+ *
+ * 节点字段：
+ *   say     [{s:'', role:true?}] 或 ['']   —— 要说的台词；role:true = 演练中「他」的气泡
+ *   chips   [{t,k,coach}]                  —— 说完后给的选项
+ *   coach   true                           —— 进入前先切教练模式（原型 S['sort'] 的 if mode!=='coach'）
+ *   confirm {text,yes,no,yesGo,noSay}      —— 轻确认卡（原型 confirmCard）
+ *   open    'ovBreath'|'ovWrite'           —— 开浮层
+ *   lamp    true                           —— 点亮一盏灯
+ *   toast   '...'                          —— 提示
+ *   nudge   true                           —— 陪伴承接（全场只出现一次）
+ *   wait    毫秒                            —— 台词说完后的停顿（原型 await wait）
+ *
+ * 红线：**危机分支不走本表**。原型 freeform 里的危机正则与热线号码（12356）不移植，
+ *      一律走 modules/crisis.js 的项目基线（热线 400-161-9995）。
+ */
+
+/* ---------- 自由输入的兜底分支（原型 freeform 里内联、无 S 键的三条） ---------- */
+const FREE_NODES = {
+  '__sleepy': {
+    say: ['睡不着的时候，脑子反而最忙。', '先别跟它较劲。要不要试试呼吸？四分钟，把身体先放下来。'],
+    chips: [{ t: '好，试一下', k: 'x-breath' }, { t: '想先说说', k: 'company' }]
+  },
+  '__tired-free': {
+    say: ['嗯，我听见了。', '别急着说清楚，先说出来就行。', '今天最难的是哪一下？'],
+    chips: [{ t: '说不清，就是累', k: 't-vague' }, { t: '有件具体的事', k: 't-specific' }]
+  },
+  '__fallback': {
+    say: ['嗯，我在听。', '再往下说一点——这件事在哪一刻最让你难受？'],
+    chips: [{ t: '有件事想理一理', k: 'sort', coach: true }, { t: '就想说说感受', k: 'company' }]
+  },
+  /* 轻确认卡的「先不用」支线（原型 confirmCard 的 onNo） */
+  '__keep-friend': { say: ['行。那就先不解决它。', '你说，我听着。'] }
+};
+
+/* ---------- 36 条剧本分支 ---------- */
+const BRANCHES = {
+  /* 累 / 说不清 */
+  'tired': {
+    say: ['嗯，我听见了。', '不用急着说是什么事。累本身，就够说一会儿了。', '今天哪一段最难熬？'],
+    chips: [
+      { t: '说不清，就是累', k: 't-vague' },
+      { t: '有件具体的事', k: 't-specific' },
+      { t: '就想有人陪一会儿', k: 't-company' }
+    ]
+  },
+  't-vague': {
+    say: ['说不清是对的。', '真的累的时候，人是没有力气去分析"为什么累"的。',
+      '那就先不说原因。今天有没有哪一刻，你稍微松了一点点？'],
+    chips: [{ t: '有，晚上一个人待着的时候', k: 't-a' }, { t: '没有，一整天都绷着', k: 't-b' }]
+  },
+  't-a': {
+    say: ['那说明你还需要一点"一个人的时候"。', '不用多，每天二十分钟就够。', '今晚那二十分钟，你想怎么过？'],
+    chips: [{ t: '我想试试那个呼吸练习', k: 'x-breath' }, { t: '就想躺着什么都不干', k: 'x-rest' }]
+  },
+  'x-breath': {
+    say: ['好。我带你去。', '跟着圆走就行，不用做对。'],
+    wait: 700, open: 'breath'
+  },
+  'x-rest': { say: ['那就躺着。什么都不干也是正经事。', '明天这个时候，我还在这儿。'] },
+  't-b': {
+    say: ['一整天都绷着——那不是你不够放松，是你今天真的没有可以放松的空档。',
+      '不用逼自己现在就松下来。', '要不要先做一轮呼吸？四分钟，什么都不用想。'],
+    chips: [{ t: '好，做一轮', k: 'x-breath' }, { t: '算了，我想说说话', k: 'company' }]
+  },
+  't-specific': {
+    say: ['好，那你挑一件说。', '不用讲前因后果，就说今天最难受的那一下，是什么时候。'],
+    chips: [{ t: '跟我老公有关', k: 'husband' }, { t: '跟孩子有关', k: 'child' }, { t: '跟我自己有关', k: 'self' }]
+  },
+  't-company': {
+    say: ['行，我在。', '你不用非得说什么。想安静一会儿也行，我不催。', '想说话的时候，随便哪句都可以开头。'],
+    chips: [{ t: '今天过得很没意思', k: 'flat' }, { t: '我是不是有点矫情', k: 'selfblame' }]
+  },
+
+  /* 没意思 / 时间 */
+  'flat': {
+    say: ['"没意思"这三个字，比"难过"更耗人。', '难过是有由头的，没意思是没有。',
+      '最近这种"没意思"，是从什么时候开始的？'],
+    chips: [{ t: '有一阵子了', k: 'flat-long' }, { t: '就这几天', k: 'flat-short' }]
+  },
+  'flat-long': {
+    say: ['有一阵子了……那它已经不只是心情了，更像是一种底色。',
+      '这种时候，我建议你别急着"让自己开心起来"。',
+      '先把每天的一件事找回来——一件你真的想做、而不是应该做的事。'],
+    nudge: true,
+    chips: [{ t: '我想不出有什么事想做', k: 'sort' }, { t: '有，但我总没时间', k: 'x-time' }]
+  },
+  'flat-short': {
+    say: ['那可能只是这几天太满了。', '不用处理，让它自己过去。', '倒是可以记一下，看看它下次什么时候来。'],
+    chips: [{ t: '好，我去记一下', k: 'x-write' }]
+  },
+  'x-time': {
+    say: ['"总没时间"通常不是时间的问题，是那件事排在所有人后面。',
+      '这周挑一件，把它排到别人前面一次试试。', '要不要我陪你把这件小事定下来？'],
+    chips: [{ t: '好', k: 'sort' }]
+  },
+  'x-write': {
+    say: ['我给你开一页纸。', '写多写少都行，主要是写给你自己看的。'],
+    wait: 700, open: 'write'
+  },
+
+  /* 自我责备 */
+  'selfblame': {
+    say: ['不矫情。', '一个人愿意把自己的感受拿出来说，是件挺不容易的事。',
+      '你会觉得矫情，多半是以前有人说你"想太多"。'],
+    chips: [{ t: '……你怎么知道', k: 'know' }, { t: '嗯，从小就这样', k: 'growup' }]
+  },
+  'know': {
+    say: ['因为这句话很常见，尤其是在把家里撑起来的人身上。',
+      '撑着的人，最没有资格说累——这是别人给你的规矩，不是事实。', '今天你可以累。']
+  },
+  'growup': {
+    say: ['从小就这样，那这句话在你身上已经待了很多年了。', '今天先不拆它。',
+      '你只试一件事：下次想说"我是不是矫情"的时候，把它换成一个陈述句——"我现在很难受"。'],
+    chips: [{ t: '好，我试试', k: 'x-lamp' }]
+  },
+  'x-lamp': {
+    say: ['记下了。', '我把这件小事放进你的变化里，明天你还能看到。'],
+    lamp: true, toast: '已记录 · 点亮一盏灯'
+  },
+
+  /* 教练组 */
+  'sort': {
+    coach: true,
+    say: ['先给我三样东西就够了：', '这件事跟谁有关、大概发生了什么、你最想要的结果是什么。',
+      '不用写得整齐，想到什么说什么。'],
+    chips: [
+      { t: '跟我老公，总是为同一件事吵', k: 'husband-sort', coach: true },
+      { t: '跟我婆婆，住一起很难受', k: 'mil-sort', coach: true },
+      { t: '跟孩子，怎么说都不听', k: 'child-sort', coach: true }
+    ]
+  },
+  'advice': {
+    coach: true,
+    say: ['可以。但我要先知道细节，不然给的都是没用的建议。',
+      '先说最近一次——发生了什么，你当时怎么说的，对方什么反应？'],
+    chips: [{ t: '我来说一次最近的', k: 'sort', coach: true }, { t: '太多了，不知道从哪说', k: 'sort', coach: true }]
+  },
+  'longtime': {
+    coach: true,
+    say: ['卡了很久的事，通常不是难在不知道怎么做。', '是难在——每个选项你都不想选。', '说说看，卡在哪一步？'],
+    chips: [{ t: '我知道该做什么，但做不到', k: 'cant-do', coach: true },
+      { t: '我不知道该选哪个', k: 'cant-choose', coach: true }]
+  },
+  'cant-do': {
+    say: ['知道该做但做不到，一般是这件事太大，或者第一次做要付出的代价太高。', '我们把它切小。',
+      '如果只做这件事的第一步，那个第一步是什么？'],
+    chips: [{ t: '开口跟他说', k: 'husband-sort', coach: true }, { t: '先不管了，太累', k: 'tired' }]
+  },
+  'cant-choose': {
+    say: ['选不出来，往往是因为你在拿"对不对"衡量。', '换个尺子：哪个选项让你更接近你想成为的那种人？',
+      '说说两个选项分别是什么。'],
+    chips: [{ t: '留还是走', k: 'husband-sort', coach: true }, { t: '说还是忍', k: 'husband-sort', coach: true }]
+  },
+
+  /* 冲突演练主线 */
+  'husband-sort': {
+    say: ['同一件事反复吵，通常不是这件事本身。', '是这件事背后，有个东西一直没被回应。',
+      '我得先知道细节。', '先说最近一次——为了什么事，你当时怎么说的，他什么反应？'],
+    chips: [
+      { t: '演练一下，我该怎么说', k: 'drill-start', coach: true },
+      { t: '我来说说上次的情况', k: 'drill-detail', coach: true }
+    ]
+  },
+  'drill-detail': {
+    say: ['好，你说。', '不用修饰，原话最好——包括他回你的那一句。'],
+    chips: [{ t: '每次我一开口他就说"你又来了"', k: 'drill-start', coach: true }]
+  },
+  'drill-start': {
+    drill: true,
+    say: ['好。规则说一遍：', '我来演他，按他平时的样子反应。', '我不会演一个理想的丈夫——那样练了没用。',
+      '你先说第一句。想好了就发给我。'],
+    toast: '演练中 · 用你平时会说的话发给我'
+  },
+  'drill-again': { say: ['来。你先说第一句。', '这次记住：不翻总账，只说这一件。'] },
+  'drill-save': {
+    drillEnd: true,
+    say: ['记下了。', '我把它做成了一张话术卡，放进你的变化里——开口前可以再看一眼。', '明天回来告诉我他怎么回的。'],
+    lamp: true, toast: '话术卡已存 · 点亮一盏灯', wait: 900, nudge: true
+  },
+
+  /* 老公 / 骂 / 孩子 / 自己 / 婆婆 */
+  'husband': {
+    say: ['跟他有关。', '那你现在最想的是——让他明白你，还是让这件事有个结果？'],
+    chips: [{ t: '想让他明白我', k: 'husband-sort', coach: true },
+      { t: '想让这件事别再发生', k: 'husband-sort', coach: true }, { t: '就想骂他一顿', k: 'mad' }]
+  },
+  'mad': {
+    say: ['想骂就骂，在我这儿不用忍着。', '骂完我们再看他那边到底卡在哪。'],
+    chips: [{ t: '算了，骂也没用', k: 'husband-sort', coach: true }]
+  },
+  'child': {
+    say: ['孩子的难，多半不是当下这一件事。', '是"我说了他也不听"，一天天堆起来的无力。', '最近一次是哪件事？'],
+    chips: [{ t: '写作业，每天都要吼', k: 'child-hw' }, { t: '不肯跟我说话', k: 'child-quiet' }]
+  },
+  'child-hw': {
+    say: ['每天都要吼——那问题可能不在作业，在这个"每天"上。', '吼是有效的，但代价是你们俩都在耗。',
+      '要不要看看有没有别的办法？'],
+    chips: [{ t: '好，帮我理理', k: 'sort', coach: true }, { t: '算了，先这样吧', k: 'x-rest' }]
+  },
+  'child-quiet': {
+    say: ['他不说，不一定是没话说。', '有可能是他试过说，结果被否掉了。',
+      '你最近一次听到他主动说点什么，是什么时候？'],
+    chips: [{ t: '想不起来了', k: 'sort', coach: true }]
+  },
+  'self': {
+    say: ['跟自己有关。', '这挺重要的——很多人说了一圈，最后才敢承认其实是自己的事。', '你想说说吗？'],
+    chips: [{ t: '我觉得我把日子过成这样', k: 'selfblame' }, { t: '我也不知道怎么了', k: 't-vague' }]
+  },
+  'mil-sort': {
+    say: ['同住这件事，难的不是合不来，是没有边界。', '先不急着改善关系。',
+      '我最想知道的是：哪几件事是你绝对不能让步的？'],
+    chips: [{ t: '孩子怎么教', k: 'mil-a', coach: true }, { t: '家里的事谁做主', k: 'mil-a', coach: true }]
+  },
+  'mil-a': {
+    say: ['好，这是原则事——原则事不谈感受，谈安排。', '而且最好不是你去说，是你丈夫去说。',
+      '要不要我帮你理一下，怎么跟他开这个口？'],
+    chips: [{ t: '好，帮我理理', k: 'husband-sort', coach: true }]
+  },
+  'child-sort': {
+    say: ['"怎么说都不听"——这句话里有两个信息。', '一是你已经说过很多次了；二是他现在对你说的话有免疫了。',
+      '我们先做一件事：这周只挑一个行为改，其他先放。', '你想先挑哪个？'],
+    chips: [{ t: '写作业', k: 'child-hw', coach: true }, { t: '看手机', k: 'child-hw', coach: true }]
+  },
+
+  'company': {
+    say: ['行，那就先不解决它。', '你说，我听着。']
+  }
+};
+
+/* ⚠ 与原型的**唯一**一处结构性偏差（显式登记，不藏）：
+ *   原型里多处芯片写 k:'company'，但 S 表里**没有** S['company'] —— 是悬空键。
+ *   它的实际行为会掉进 freeform 兜底，再问一遍「这件事在哪一刻最让你难受？」，形成软循环。
+ *   本移植给 company 一个明确收束，文案直接取自原型确认卡「先不用，就想说说」的 onNo 支线
+ *   （['行。那就先不解决它。','你说，我听着。']），未自创一字。
+ *   tools/__tests__/x-ximi.test.js 里有一条用例专门锁定"原型 36 键全覆盖 + 仅多这一条"。 */
+
+/* ---------- 轻确认卡（原型 freeform 的 asksHow 支线） ---------- */
+const COACH_CONFIRM = {
+  lead: ['听见了。这件事你想说的，我大概明白。'],
+  text: '要不要我帮你理一理？我会问几个具体的，然后给你一个能用的做法。',
+  yes: '好，帮我理理',
+  no: '先不用，就想说说',
+  yesGo: 'sort',
+  noGo: '__keep-friend'
+};
+
+/* ---------- 自由输入的关键词分流（原型 freeform，逐条照抄） ----------
+ * 顺序即优先级：asksHow → 婆婆 → 孩子 → 老公 → 累 → 兜底
+ * crisis 不在此表（红线：走 modules/crisis.js 的前置过滤） */
+const FREE_RE = {
+  asksHow: /怎么办|该不该|怎么解决|有什么办法|怎么才能|如何是好|救我/,
+  sleepy: /睡不着|失眠|半夜醒/,
+  tired: /累|烦|难受|委屈|撑不住|崩溃|想哭/,
+  husband: /老公|丈夫|他|伴侣/,
+  mil: /婆婆|婆家/,
+  child: /孩子|儿子|女儿|娃/
+};
+
+/* 自由输入 → 节点键（不含 asksHow，见 route） */
+function routeFree(text) {
+  const t = String(text || '');
+  if (FREE_RE.mil.test(t)) return 'mil-sort';
+  if (FREE_RE.child.test(t)) return 'child-sort';
+  if (FREE_RE.husband.test(t)) return 'husband-sort';
+  if (FREE_RE.tired.test(t)) return '__tired-free';
+  return '__fallback';
+}
+
+/* 自由输入的**完整**分流，顺序严格照原型 freeform：
+ *   睡不好 → 问怎么办 → 婆婆 → 孩子 → 老公 → 累 → 兜底
+ * 返回：
+ *   { k: '节点键' }        直接走该节点
+ *   { confirm: true }     闺蜜模式下问「要不要帮你理一理」→ 轻确认卡
+ * 危机不在本表：红线，由页面用 modules/crisis 在**最前面**拦（原型也是第一个判断）。
+ */
+function route(text, mode) {
+  const t = String(text || '');
+  if (FREE_RE.sleepy.test(t)) return { k: '__sleepy' };
+  if (FREE_RE.asksHow.test(t)) return mode === 'friend' ? { confirm: true } : { k: 'sort' };
+  return { k: routeFree(t) };
+}
+
+/* ---------- 演练：按你发的话选他的一种反应 + 点评 ----------
+ * 逐条照抄原型 drillReply（防御式 / 示弱式 / 沉默式三套） */
+const DRILL = {
+  defensive: {
+    re: /你总是|你从来|你每次都|凭什么|你就不能|为什么你/,
+    role: '你又来了。\n我上班一天回来，你就不能让我清静会儿？',
+    review: [
+      '（回到我）刚才那句，我作为他会立刻竖起来——因为开头是"你总是"。',
+      '这三个字一出来，后面说什么他都听不见了。',
+      '换一个开头：只说这一次、只说一件事，从"我"起头。',
+      '比如：「昨天你答应孩子的事没做到，我一个人应付了一晚上，挺难的。」',
+      '再来一次？'
+    ]
+  },
+  soft: {
+    re: /我|觉得|希望|有点|挺/,
+    role: '……我没说不做啊。\n你别什么事都上纲上线行不行？',
+    review: [
+      '（回到我）这次他没炸，但开始躲了——"上纲上线"是他把话题推开的方式。',
+      '这时候别追着讲道理，把话题拉回具体的一件事：',
+      '「我不是说你这个人的问题。就是昨天那一件——你答应了的。」',
+      '一次只谈一件。他才能接得住。',
+      '再来一次？'
+    ]
+  },
+  silent: {
+    re: null,
+    role: '嗯。\n（他没说话，低头看手机）',
+    review: [
+      '（回到我）他沉默了。沉默不是同意，是在等这件事过去。',
+      '沉默的时候，加一句"邀请"会好一点——',
+      '「我不是要吵，我就是想让你知道我一个人有点扛不住。」',
+      '再来一次？'
+    ]
+  }
+};
+
+function drillReply(text) {
+  const t = String(text || '');
+  if (DRILL.defensive.re.test(t)) return DRILL.defensive;
+  if (DRILL.soft.re.test(t)) return DRILL.soft;
+  return DRILL.silent;
+}
+
+/* 演练收尾的两个选项（原型 runDrill 尾部 askChips） */
+const DRILL_CHIPS = [
+  { t: '好，再来一次', k: 'drill-again', coach: true },
+  { t: '记下来，我明天试试', k: 'drill-save', coach: true }
+];
+
+/* ---------- 按小时问候（原型 greetByHour，逐字照抄） ---------- */
+function greetByHour(hour) {
+  const h = typeof hour === 'number' ? hour : new Date().getHours();
+  if (h >= 5 && h < 11) return '早。今天不用起得很急。';
+  if (h >= 11 && h < 14) return '中午了，先歇一会儿。';
+  if (h >= 14 && h < 18) return '下午了，还撑得住吗？';
+  if (h >= 18 && h < 21) return '天快黑了，今天可以到这儿。';
+  if (h >= 21 && h < 24) return '这会儿安静下来了。';
+  return '还没睡。我在。';
+}
+
+/* 开场白（原型 init 里的 setTimeout 那句） */
+const OPENING = '我在。\n今天想从哪儿说起都行——或者直接点下面一个词。';
+
+/* 两组静态芯片（首页第一屏）——原型是写死在 HTML 里的「先说说」/「想解决点什么」 */
+const CHIPS_FRIEND = [
+  { t: '今天有点累', k: 'tired' },
+  { t: '有件事堵着', k: 't-specific' },
+  { t: '就想找人说说话', k: 't-company' }
+];
+const CHIPS_COACH = [
+  { t: '有件事想理一理', k: 'sort', coach: true },
+  { t: '帮我出出主意', k: 'advice', coach: true },
+  { t: '一件事卡了好久', k: 'longtime', coach: true }
+];
+
+/* 模式切换时的应答（原型 switchMode 的 byUser 分支） */
+const MODE_SAY = {
+  coach: ['好，那我们把这件事理清楚。'],
+  friend: ['好，先不想办法了。你说，我听着。']
+};
+const PLACEHOLDER = { friend: '想到哪，说到哪…', coach: '说说具体的情况…' };
+
+/* 陪伴承接（原型 companionNudge，全场只出现一次） */
+const NUDGE = {
+  text: '另外说一句——这件事如果想找个真人一起走，陪伴师每周固定时间在。你在这里说过的，她都接得上，不用从头讲。',
+  yes: '看看她是谁',
+  no: '先不用'
+};
+
+module.exports = {
+  BRANCHES: BRANCHES,
+  FREE_NODES: FREE_NODES,
+  COACH_CONFIRM: COACH_CONFIRM,
+  FREE_RE: FREE_RE,
+  routeFree: routeFree,
+  route: route,
+  DRILL: DRILL,
+  drillReply: drillReply,
+  DRILL_CHIPS: DRILL_CHIPS,
+  greetByHour: greetByHour,
+  OPENING: OPENING,
+  CHIPS_FRIEND: CHIPS_FRIEND,
+  CHIPS_COACH: CHIPS_COACH,
+  MODE_SAY: MODE_SAY,
+  PLACEHOLDER: PLACEHOLDER,
+  NUDGE: NUDGE
+};
+const SC=module.exports;
+(function(){const module={exports:{}};const exports=module.exports;
+/* 危机干预域模块（红线级）：危机词识别、安抚文案、专业转介与静默期时序。
+ * 纯数据+纯函数，无 wx 依赖 —— 后端接通后由服务端下发判定，此模块退化为兜底。
+ * 红线：危机场景零商业化、永不推销；文案禁用医疗词（诊断/治疗/治愈/康复）。 */
+const CRISIS_WORDS = ['想死', '活不下去', '不想活', '自杀', '家暴', '打死我', '割腕', '轻生'];
+
+const REPLY = '我听到你说「活不下去了」，这一定让你感到极度痛苦。当一个人经历这样的黑暗时刻，产生这些念头是创伤性的反应，这不是你的错。\n\n你现在并不孤单。我想让你知道，有很多人经历过类似的黑暗，并且走了出来。我这就为你联系专业支持。';
+
+/* 时序参数（毫秒）：typing 打字态时长 / calm 静默期（期间弹层不可关，防止误触离开支持页） */
+const TIMING = { typing: 1200, calm: 5000 };
+
+function isCrisis(text) {
+  if (!text) return false;
+  return CRISIS_WORDS.some(w => text.includes(w));
+}
+
+module.exports = { CRISIS_WORDS, REPLY, TIMING, isCrisis };
+window.crisis=module.exports;window.__crisisMod=window.crisis;})();
+(function(){const module={exports:{}};const exports=module.exports;
+/* 演示态集中管理：所有「演示版/暂未开放」提示的唯一出处。
+ * 后端接通时：把对应 key 从 DEMO 中删除并删除页面调用点即可（docs/API-MAP.md 三色清单联动）。
+ * 纯数据无 wx 依赖 —— 换 UI 框架可直接复用。 */
+const DEMO = {
+  voice: '语音输入 · 演示版暂未开放',
+  pic: '图片倾诉 · 演示版暂未开放',
+  pressVoice: '按住我说话 · 语音倾诉演示',
+  audio: '音频播放 · 演示版',
+  mall: '跳转商家商城 · 演示版',
+  article: '文章详情 · 演示版',
+  column: '咨询师专栏 · 演示版',
+  book: '书籍详情 · 演示版',
+  payDone: '已跳转企业微信 · 演示结束',
+  pay: '开通陪跑 · 演示版暂未开放支付',
+  upgrade: '升级陪跑 · 见下方会员卡',
+  archive: '我的档案 · 演示版',
+  order: '我的订单 · 演示版',
+  booking: '我的预约 · 演示版',
+  invite: '邀请闺蜜 · 双方各得7天体验',
+  setting: '设置 · 演示版',
+  meditate: '3 分钟呼吸练习即将开始（演示）',
+  shareSave: '分享卡已保存（演示）'
+};
+
+module.exports = {
+  DEMO,
+  /* 统一取用：key 不存在时直接返回 key 本身，避免静默丢提示 */
+  t(key) { return DEMO[key] || key; }
+};
+})();
+(function(){const module={exports:{}};const exports=module.exports;
+/* 成长页列表内容：咨询师感悟 / 用户分享 / 名家书房 / 往期主题的唯一出处。
+ * 原先硬编码在 content.wxml，抽成纯数据无 wx 依赖 —— 换 UI 壳可直接搬走。
+ * 改文案只改这里；页面只负责渲染。 */
+const columns = [
+  {
+    avatar: 'cloud://cloudbase-d3giwlyte87aecc2e.636c-cloudbase-d3giwlyte87aecc2e-1485483652/xixi-art/avatar-c1.jpg',
+    name: '沈若云',
+    title: '国家二级心理咨询师',
+    quote: '「讨好型的人不是善良，是害怕——害怕一旦说"不"，就失去被爱的资格。经营关系的第一步，是允许别人对你失望。」',
+    date: '3天前'
+  },
+  {
+    avatar: 'cloud://cloudbase-d3giwlyte87aecc2e.636c-cloudbase-d3giwlyte87aecc2e-1485483652/xixi-art/avatar-c2.jpg',
+    name: '周砚秋',
+    title: '婚姻家庭治疗师',
+    quote: '「职场里九成的内耗，来自把别人的课题背在自己身上。分清"他的事"和"我的事"，是中年人最省心的能力。」',
+    date: '5天前'
+  }
+];
+
+const shares = [
+  {
+    initial: '梨', bg: '#E8CBD3', color: '#A96678',
+    name: '阿梨', time: '今天',
+    text: '38岁，结婚11年。昨天第一次拒绝了婆婆临时带娃的要求，紧张得手心出汗，但说完之后，天没塌。原来边界感是练出来的。',
+    likes: 236, comments: 41, forwards: 12
+  },
+  {
+    initial: '麦', bg: '#D5DCC9', color: '#7C8F6E',
+    name: '麦田', time: '昨天',
+    text: '部门例会照着文章里的方法，把"随便"换成了"我建议"。被采纳的那一刻突然明白：温柔和没主见，从来不是一回事。',
+    likes: 189, comments: 23, forwards: 8
+  },
+  {
+    initial: '转', bg: '#D9CFE6', color: '#8D7FB8',
+    name: '42岁的转身', time: '3天前',
+    text: '打卡第21天。以前每天睡前反复想白天说错的话，现在写下来三行字就睡。安睡不是别人给的，是自己肯放过自己。',
+    likes: 412, comments: 56, forwards: 31
+  }
+];
+
+const books = [
+  {
+    title: '《宽松的婚姻》',
+    author: '周国平 · 散文',
+    quote: '"与开放的婚姻相比，宽松的婚姻或许是一个较为可行的方案。"'
+  },
+  {
+    title: '《走到人生边上》',
+    author: '杨绛 · 商务印书馆 2007',
+    quote: '"我已经走到人生的边缘上，再往前去，就是\'走了\'，\'去了\'，\'不在了\'。九十六岁的自问自答，谈生死、灵魂与人生的价值。"'
+  },
+  {
+    title: '《蔡康永的说话之道》',
+    author: '蔡康永 · 2010',
+    quote: '"别人赞美你一句，你回一句赞美，这就叫社交。"'
+  }
+];
+
+const past = [
+  { title: '婚姻里的沟通修复', count: '8 篇 ›' },
+  { title: '独处的能力', count: '6 篇 ›' },
+  { title: '和青春期的孩子相处', count: '7 篇 ›' }
+];
+
+module.exports = { columns, shares, books, past };
+window.CD=module.exports;})();
+(function(){const module={exports:{}};const exports=module.exports;
+/* ============================================================
+ * API 层（真实前端接入点）
+ * - USE_MOCK=true  时全部走本地 mock 数据（当前演示模式）
+ * - USE_MOCK=false 时走 wx.request，按下方注释的接口契约返回
+ * 接后端只需：改 BASE_URL、USE_MOCK=false、按契约实现服务端
+ * ============================================================ */
+
+const BASE_URL = 'https://api.example.com'; // TODO: 换成真实网关
+const USE_MOCK = true;
+
+/* ---------- 通用请求封装 ---------- */
+function rawRequest(path, method = 'GET', data = {}, token = '') {
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: BASE_URL + path,
+      method,
+      data,
+      header: { 'content-type': 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) },
+      success(res) {
+        if (res.statusCode >= 200 && res.statusCode < 300) resolve(res.data);
+        else reject(new Error('HTTP ' + res.statusCode + ': ' + JSON.stringify(res.data)));
+      },
+      fail: reject
+    });
+  });
+}
+
+function request(path, method = 'GET', data = {}) {
+  if (USE_MOCK) return Promise.reject(new Error('USE_MOCK=true，未走网络：' + path));
+  const user = require('../stores/user');
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: BASE_URL + path,
+      method,
+      data,
+      header: { 'content-type': 'application/json', ...(user.get('token') ? { Authorization: 'Bearer ' + user.get('token') } : {}) },
+      success(res) {
+        if (res.statusCode >= 200 && res.statusCode < 300) resolve(res.data);
+        else reject(new Error('HTTP ' + res.statusCode + ': ' + JSON.stringify(res.data)));
+      },
+      fail: reject
+    });
+  });
+}
+const delay = (ms, val) => new Promise(r => setTimeout(() => r(val), ms));
+
+/* ============================================================
+ * 1. 问卷（onboard）→ 提交答卷
+ * 契约：POST /api/onboard  body: { answers: {0:[..],1:[..],...} }
+ *       返回 { userId, nickname }
+ * ============================================================ */
+function submitOnboard(answers) {
+  if (USE_MOCK) return delay(200, { userId: 'mock-user', nickname: (answers[4] || [])[0] || '小美' });
+  return request('/api/onboard', 'POST', { answers });
+}
+
+/* ============================================================
+ * 1.5 问卷题目
+ * 契约：GET /api/onboard/questions → Step[]（结构同本地 OB_STEPS）
+ * ============================================================ */
+const OB_STEPS = [
+  { type: 'multi', max: 3, label: '当前困扰 · 多选，最多 3 项', title: '最近，哪些事让你想找人说说？', sub: '选最接近的就好，之后可改。', skip: '暂时不想说', note: '我在听。',
+    opts: ['伴侣沟通不顺', '婚姻出现变化', '对关系感到不安', '家庭/亲子压力', '情绪起伏大', '工作生活压力大', '失眠、想太多', '孤独、没人理解', '想更了解自己', '只是想说说话'] },
+  { type: 'multi', max: 2, label: '陪伴偏好 · 多选，最多 2 项', title: '你希望西米怎么陪你？', sub: '没有标准答案，我会边聊边调。', skip: '还不确定，先聊聊', note: '慢慢来。',
+    opts: ['先听我说完', '帮我把事理清楚', '帮我看见真实感受', '一起想想怎么办', '提醒我注意安全与边界', '需要时联系真人咨询师', '还不确定，先聊聊'] },
+  { type: 'single', label: '关系阶段 · 单选，可跳过', title: '你目前大致处在哪个阶段？', sub: '只用来更好理解你，不会替你做关系决定。', skip: '暂时不想说', note: '谢谢你愿意说。',
+    opts: ['单身 / 暂无稳定关系', '恋爱 / 稳定交往', '已婚 / 共同生活', '分居、离婚或关系变动中', '情况比较复杂', '暂时不想说'] },
+  { type: 'single', label: '当前情绪 · 单选', title: '此刻感受更接近？', sub: '选最接近的一项即可。', skip: '说不清楚', note: '辛苦了。',
+    opts: ['比较平静', '有些委屈', '焦虑不安', '生气烦躁', '疲惫无力', '难过想哭', '感到绝望', '说不清楚'] },
+  { type: 'name', label: '怎么称呼 · 可选', title: '我可以怎么叫你？', sub: '不用真名，只用于陪伴称呼。', skip: '暂时不设置', note: '很高兴认识你。' }
+];
+function fetchOnboardQuestions() {
+  if (USE_MOCK) return delay(100, OB_STEPS);
+  return request('/api/onboard/questions').catch(() => OB_STEPS); /* 接口缺席时兜底内置题集 */
+}
+
+/* ============================================================
+ * 2. AI 树洞（chat）
+ * 契约：
+ *   GET  /api/chat/script            → 开场剧本 ScriptLine[]
+ *   POST /api/chat/message {text}    → { reply, tags?, mem?, crisis? }
+ * crisis=true 时前端弹危机干预卡
+ * ============================================================ */
+const CHAT_SCRIPT = [
+  { role: 'ai', text: '下午好，{name}。我在这里，今天过得怎么样？慢慢说，不着急。 🌷' },
+  { role: 'user', text: '昨天我又翻了他手机，什么都没翻到，可我就是安心不下来' },
+  { role: 'ai', text: '听起来你现在很焦虑，还带着一点自我怀疑——明明没有找到什么，心却更慌了。在信任被动摇过之后，这种「不踏实」是很多人都会经历的，这不是你敏感。\n\n我好奇的是，如果用一个词形容你现在最想要的，那会是什么？', tags: ['焦虑', '不安'] },
+  { role: 'user', text: '确定性吧。我不想再猜了，太累了' },
+  { role: 'ai', text: '我记得你提过，你们结婚十年了，孩子也8岁了。十年的感情，让你想要的是一个答案，而不是一场输赢，对吗？\n\n在摊牌之前，也许可以先想清楚一件事：你希望那次谈话，把你们带向哪里。如果想有人陪你把利弊一条条梳理清楚，我可以帮你预约擅长婚姻信任方向的咨询师。', tags: ['疲惫', '渴望确定'], mem: true }
+];
+const CHAT_REPLIES = [
+  '嗯，我在听。这种反反复复的猜测最消耗人了——你一个人扛了这么久，真的很不容易。\n\n如果此刻只做一件让自己松一口气的小事，你会想到什么？',
+  '能感觉到你说这些的时候，心里是又委屈又疲惫的。任何人在你的处境里，都会有这样的感受。\n\n我们先把「他有没有」放一放。你有多久没有好好睡过一觉、好好吃过一顿饭了？',
+  '谢谢你愿意把这些说给我听。能看出来，你心里其实已经在慢慢有答案了，只是还需要一点力量去确认它。\n\n如果下周的今天，你希望自己的生活是什么样子？'
+];
+/* 危机词唯一正本在 modules/crisis.js；此处 re-export 保持旧引用兼容 */
+const { CRISIS_WORDS } = require('../modules/crisis');
+
+function fetchChatScript() {
+  if (USE_MOCK) return delay(100, CHAT_SCRIPT);
+  return request('/api/chat/script');
+}
+function sendChatMessage(text) {
+  /* 前端兜底：危机词本地也拦一层（不能只依赖服务端）；文案正本见 modules/crisis.js */
+  const crisis = require('../modules/crisis').isCrisis(text);
+  if (USE_MOCK) {
+    return delay(1300, crisis
+      ? { reply: require('../modules/crisis').REPLY, crisis: true }
+      : { reply: CHAT_REPLIES[Math.floor(Math.random() * CHAT_REPLIES.length)] });
+  }
+  return request('/api/chat/message', 'POST', { text });
+}
+
+/* ============================================================
+ * 3. AI 预诊断（prediag）
+ * 契约：
+ *   GET  /api/prediag/questions → Question[] { q, opts[] }
+ *   POST /api/prediag/answers { answers: string[] }
+ *       → { report: Report }（结构见下方 MOCK_REPORT）
+ * ============================================================ */
+const PREDIAG_QUESTIONS = [
+  { q: '在为你匹配最合适的咨询师之前，我想先了解几个关键信息，这样能让你的咨询更高效。\n\n你们目前的婚姻状态是怎样的？', opts: ['正在冷战', '刚发现出轨迹象', '已经分居', '其他情况'] },
+  { q: '谢谢你愿意告诉我这些。这件事大概发生多久了？', opts: ['一周内', '一个月内', '半年以内', '已经超过半年'] },
+  { q: '嗯，我明白了。那你现在最困扰、最想解决的问题是什么？', opts: ['信任崩塌走不出来', '情绪内耗很严重', '担心影响孩子', '不知道该不该继续'] },
+  { q: '好的。你希望通过这次咨询，达到什么样的目标？', opts: ['修复这段关系', '看清方向再做决定', '先让自己情绪稳定', '学会保护自己和孩子'] },
+  { q: '最后一个问题——之前有没有尝试过其他方式来解决？', opts: ['自己看书调整过', '找朋友倾诉过', '做过心理咨询', '还没有尝试过'] }
+];
+const MOCK_REPORT = {
+  emotions: ['焦虑', '愤怒', '迷茫'],
+  conflict: '婚姻信任危机 —— 发现配偶疑似暧昧信息，尚未证实，处于「想求证又怕摊牌」的僵持状态，伴随持续的情绪内耗。',
+  goal: '稳定当前情绪，梳理应对策略，评估关系走向。',
+  urgency: { level: 0.55, label: '中度 · 建议尽快' },
+  direction: '婚姻信任修复 · 出轨创伤疗愈方向咨询师'
+};
+
+function fetchPrediagQuestions() {
+  if (USE_MOCK) return delay(100, PREDIAG_QUESTIONS);
+  return request('/api/prediag/questions');
+}
+function submitPrediagAnswers(answers) {
+  if (USE_MOCK) return delay(600, { report: MOCK_REPORT });
+  return request('/api/prediag/answers', 'POST', { answers });
+}
+
+/* ============================================================
+ * 4. 咨询师（consultants / cdetail）
+ * 契约：
+ *   GET /api/counselors?direction=xxx → Counselor[]
+ *   GET /api/counselors/:id           → CounselorDetail
+ *   Counselor: { id, name, badge?, avatar, title, tags[], price, priceUnit, rating, cases, recommend? }
+ *   CounselorDetail: { ...Counselor, stats:[{n,label}×3], background, tags[], slots[] }
+ * ============================================================ */
+const COUNSELORS = [
+  { id: 'c1', name: '沈若云', badge: 'TOP', avatar: 'cloud://cloudbase-d3giwlyte87aecc2e.636c-cloudbase-d3giwlyte87aecc2e-1485483652/xixi-art/avatar-c1.jpg', recommend: true,
+    title: '国家二级心理咨询师 · 婚姻治疗 12 年', tags: ['出轨创伤', '信任修复'],
+    price: 599, priceUnit: '/40分钟', rating: '4.9', cases: '案例 1200+' },
+  { id: 'c2', name: '林晚', avatar: 'cloud://cloudbase-d3giwlyte87aecc2e.636c-cloudbase-d3giwlyte87aecc2e-1485483652/xixi-art/avatar-c2.jpg',
+    title: '婚姻家庭咨询师 · 8 年', tags: ['夫妻沟通', '情绪疗愈'],
+    price: 399, priceUnit: '/40分钟', rating: '4.8', cases: '案例 860+' },
+  { id: 'c3', name: '陈静姝', avatar: 'cloud://cloudbase-d3giwlyte87aecc2e.636c-cloudbase-d3giwlyte87aecc2e-1485483652/xixi-art/avatar-c3.jpg',
+    title: '应用心理学硕士 · 婚姻危机干预 15 年', tags: ['婚姻危机', '女性成长'],
+    price: 799, priceUnit: '/40分钟', rating: '5.0', cases: '案例 2000+' }
+];
+const COUNSELOR_DETAIL = {
+  id: 'c1', name: '沈若云', avatar: 'cloud://cloudbase-d3giwlyte87aecc2e.636c-cloudbase-d3giwlyte87aecc2e-1485483652/xixi-art/avatar-c1.jpg',
+  title: '国家二级心理咨询师 · 婚姻家庭治疗师',
+  stats: [ { n: '12年', label: '从业经验' }, { n: '1200+', label: '咨询案例' }, { n: '4.9', label: '用户评分' } ],
+  background: '华东师范大学心理学硕士，中德班婚姻家庭治疗连续培训项目成员。专注出轨创伤修复与夫妻信任重建，累计个案时长 6000+ 小时。',
+  tags: ['出轨创伤', '信任修复', '夫妻沟通', '情绪稳定'],
+  slots: ['明天 10:00', '明天 14:30', '周三 19:00', '周四 20:00', '周五 21:00'],
+  price: 599
+};
+
+function fetchCounselors() {
+  if (USE_MOCK) return delay(200, COUNSELORS);
+  return request('/api/counselors');
+}
+function fetchCounselorDetail(id) {
+  if (USE_MOCK) return delay(200, COUNSELOR_DETAIL);
+  return request('/api/counselors/' + id);
+}
+
+/* ============================================================
+ * 5. 首页金句
+ * 契约：GET /api/daily-quote → { text, author, image }
+ * image 为图片 URL（当前 mock 给本地路径）
+ * ============================================================ */
+const HOME_QUOTES = [
+  ['我们曾如此期盼外界的认可，到最后才知道，世界是自己的，与他人毫无关系。', '—— 杨绛', 'q1'],
+  ['爱自己，是终身浪漫的开始。', '—— 王尔德', 'q2'],
+  ['温柔不是妥协，是见过风雨之后的选择。', '—— 西米', 'q3'],
+  ['你照顾了所有人，也要记得被自己照顾。', '—— 西米', 'q4'],
+  ['真正的强大，是允许自己偶尔不强大。', '—— 西米', 'q5'],
+  ['人间烟火气，最抚凡人心。', '—— 汪曾祺', 'q6'],
+  ['把日子过成自己喜欢的样子，什么时候开始都不晚。', '—— 西米', 'q7'],
+  ['愿你成为自己的太阳，无需凭借谁的光。', '—— 西米', 'q8']
+];
+function fetchDailyQuote() {
+  if (USE_MOCK) {
+    const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 864e5);
+    const q = HOME_QUOTES[dayOfYear % HOME_QUOTES.length];
+    /* 票 105：quotes 目录不存在且 webp 已退役（iOS 不渲染）——分享卡用包内真实存在的西米形象图
+     * （分享 imageUrl 不支持 cloud://，须包内 jpg/png） */
+    return delay(100, { text: q[0], author: q[1], image: '/images/xixi-3d.jpg' });
+  }
+  return request('/api/daily-quote');
+}
+
+/* ============================================================
+ * 6. 支付（cdetail → 微信支付）
+ * 契约：POST /api/orders { counselorId, slot }
+ *       → { orderId, payParams }  payParams 传给 wx.requestPayment
+ * ============================================================ */
+function createOrder(counselorId, slot) {
+  if (USE_MOCK) return delay(300, { orderId: 'mock-' + Date.now(), payParams: null });
+  return request('/api/orders', 'POST', { counselorId, slot });
+}
+/* 真实支付调用示例（接后端后在 cdetail.doPay 里改用）：
+ * const { payParams } = await createOrder(cid, slot);
+ * wx.requestPayment({ ...payParams, success, fail });
+ */
+
+/* ---------- 心情打卡（本地即可，后续可同步云端） ---------- */
+function saveMood(moodIndex) {
+  if (USE_MOCK) return Promise.resolve();
+  return request('/api/mood', 'POST', { date: '2026-10-06', mood: moodIndex }); // TODO: 用真实日期
+}
+
+module.exports = {
+  USE_MOCK, BASE_URL, request, rawRequest, fetchOnboardQuestions, FALLBACK_STEPS: OB_STEPS,
+  submitOnboard,
+  fetchChatScript, sendChatMessage, CRISIS_WORDS,
+  fetchPrediagQuestions, submitPrediagAnswers,
+  fetchCounselors, fetchCounselorDetail,
+  fetchDailyQuote,
+  createOrder, saveMood
+};
+window.api=module.exports;})();
+</script>
+<script>
+/* ===== app.js —— 全流程互动移植（文案取自线上模块，零改写） ===== */
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const S = { mode: 'friend', msgs: [], _id: 1, _busy: false, _drill: false, _nudged: false, lamps: 18, tab: 'home', jnl: [], cons: null, cd: null, pd: { step: 0, qs: [], ans: [], running: true } };
+
+let toastT = null;
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 1900); }
+function go(name) { $$('.page').forEach(p => p.classList.remove('on')); $('#p-' + name).classList.add('on'); $('#p-' + name).scrollTop = 0; }
+function setTab(t) { S.tab = t; $$('#tabbar .tb-i').forEach(b => b.classList.toggle('on', b.dataset.tab === t)); const co = $('#chat-open'); go(t === 'home' && co && co.dataset.on === '1' ? 'chat' : t); }
+$$('#tabbar .tb-i').forEach(b => b.addEventListener('click', () => { const co = $('#chat-open'); if (co) co.dataset.on = '0'; setTab(b.dataset.tab); if (b.dataset.tab === 'grow') renderGrow(); if (b.dataset.tab === 'content') renderContent(); if (b.dataset.tab === 'me') renderMe(); }));
+$$('.back').forEach(b => b.addEventListener('click', () => go(b.dataset.go)));
+
+/* ---------- onboard ---------- */
+function renderOnboard() {
+  $('#p-onboard').innerHTML = '<div class="seal-lg">西米</div><div class="on-t1">把心事，<br>说给懂你的人听</div><div class="on-t2">我可以在你身边 24 小时。<br>先告诉我，此刻最接近你的一句话——</div><div class="on-opts"><div class="on-opt" data-m="有点累">今天有点累</div><div class="on-opt" data-m="说不清">心里有事，说不清</div><div class="on-opt" data-m="还好">还行，想先看看</div></div><button class="enter-btn" id="on-enter">进 入</button>';
+  $$('#p-onboard .on-opt').forEach(o => o.addEventListener('click', () => { S.firstMood = o.dataset.m; toast('记下了 · ' + o.dataset.m); }));
+  $('#on-enter').addEventListener('click', () => { renderHome(); setTimeout(() => toast('我在呢，' + (S.firstMood || '') + '～'), 500); });
+}
+
+/* ---------- home ---------- */
+function renderHome() {
+  const h = new Date().getHours();
+  const greet = h < 5 ? '夜深了' : h < 11 ? '早上好' : h < 14 ? '中午好' : h < 18 ? '下午好' : '晚上好';
+  $('#p-home').innerHTML = '<div class="hero"><div class="hx"><b>西 米</b><i>X I M I</i><em>' + greet + '。今天不用起得很急。</em></div></div>' +
+    '<div class="orb-row"><div class="orb" id="chat-open" data-on="0" title="点我聊聊"></div><div class="orb-bub" id="chat-open2">' + esc(greet) + '呀，今天也辛苦啦 🫧</div></div>' +
+    '<div class="orb-meta"><span class="dot"></span>24h 倾听中 · 点气泡聊聊</div>' +
+    '<div class="hwrap"><div class="hq"><div class="lb"><span>今日一句 · DAILY</span><span class="sh">分享</span></div><div class="qt" id="hq-t">「</div><div class="au" id="hq-a"></div></div></div>' +
+    '<div class="hgrid"><div class="hcell" data-go="consultants"><span class="ic">🧑‍⚕️</span><b>匹配咨询师</b><span>3 位 · 已按需预匹配</span></div><div class="hcell" data-go="prediag"><span class="ic">🧭</span><b>预诊断</b><span>2 分钟 · 5 个问题</span></div></div>';
+  $('#p-home .hq .sh').addEventListener('click', () => toast('分享卡已保存（演示）'));
+  const goMap = { consultants: openConsultants, prediag: openPrediag };
+  $$('#p-home .hcell').forEach(c => c.addEventListener('click', () => goMap[c.dataset.go]()));
+  const openChat = () => { $('#chat-open').dataset.on = '1'; go('chat'); };
+  $('#chat-open').addEventListener('click', openChat);
+  $('#chat-open2').addEventListener('click', openChat);
+  api.fetchDailyQuote().then(q => { $('#hq-t').textContent = '「' + q.text + '」'; $('#hq-a').textContent = q.author; });
+  go('home');
+}
+
+/* ---------- chat 引擎（逐字移植 chat.js 交互语义） ---------- */
+function pushMsg(kind, role, text) {
+  const d = document.createElement('div');
+  if (kind === 'msg') { d.className = 'msg ' + role; if (role === 'role') d.innerHTML = '<span class="rt">演练中 · 他</span>' + esc(text); else d.textContent = text; }
+  else if (kind === 'typing') { d.className = 'typing'; d.textContent = '西米正在输入…'; }
+  $('#msgs').appendChild(d); scrollBottom(); return d;
+}
+function pushChips(items) {
+  const d = document.createElement('div'); d.className = 'chips';
+  items.forEach(c => { const b = document.createElement('span'); b.className = 'chip' + (c.coach ? ' coach' : ''); b.textContent = c.t; b.addEventListener('click', () => { d.remove(); pushMsg('msg', 'user', c.t); runBranch(c.k); }); d.appendChild(b); });
+  $('#msgs').appendChild(d); scrollBottom();
+}
+function scrollBottom() { const p = $('#p-chat'); p.scrollTop = p.scrollHeight; }
+let typingEl = null;
+function setTyping(on) { if (typingEl) { typingEl.remove(); typingEl = null; } if (on) { typingEl = pushMsg('typing'); } }
+function later(fn, ms) { return new Promise(r => setTimeout(() => { fn(); r(); }, ms)); }
+function say(lines) {
+  return lines.reduce((p, line) => p.then(() => new Promise(res => {
+    const text = typeof line === 'string' ? line : line.s;
+    const role = typeof line === 'object' && line.role;
+    setTyping(true);
+    setTimeout(() => {
+      setTyping(false); pushMsg('msg', role ? 'role' : 'ai', text);
+      setTimeout(res, 180);
+    }, 430 + Math.min((text || '').length * 22, 900));
+  })), Promise.resolve());
+}
+function runBranch(key) {
+  if (S._busy) return; S._busy = true;
+  const node = SC.BRANCHES[key] || SC.FREE_NODES[key];
+  const done = () => { S._busy = false; };
+  if (!node) { say(SC.FREE_NODES['__fallback'].say).then(() => { pushChips(SC.FREE_NODES['__fallback'].chips); done(); }); return; }
+  let chain = Promise.resolve();
+  if (node.coach && S.mode !== 'coach') chain = chain.then(() => switchMode('coach'));
+  if (node.say) chain = chain.then(() => say(node.say));
+  if (node.chips) chain = chain.then(() => pushChips(node.chips));
+  if (node.drill) chain = chain.then(() => { S._drill = true; });
+  if (node.drillEnd) chain = chain.then(() => { S._drill = false; addLamp(); });
+  if (node.lamp) chain = chain.then(() => addLamp());
+  if (node.toast) chain = chain.then(() => toast(node.toast));
+  if (node.nudge && !S._nudged) chain = chain.then(showNudge);
+  chain.catch(e => { console.error('branch err', e); }).then(done, done);
+}
+function runDrill(text) {
+  S._busy = true;
+  const r = SC.drillReply(text);
+  setTyping(true); scrollBottom();
+  setTimeout(() => {
+    setTyping(false); pushMsg('msg', 'role', r.role);
+    setTimeout(() => say([r.review]).then(() => { pushChips(SC.DRILL_CHIPS); S._busy = false; }), 420);
+  }, 760);
+}
+function switchMode(m) {
+  S.mode = m;
+  $$('.modebar span').forEach(s => s.classList.toggle('on', s.dataset.mode === m));
+  $('#chat-input').placeholder = SC.PLACEHOLDER[m];
+  if (m === 'coach' && !S._coachWelcomed) { S._coachWelcomed = true; return say(['教练模式开好了。', '这里不哄人——我们直接把事捋清楚。', '说一件最想解决的事。']); }
+  return Promise.resolve();
+}
+function triggerCrisis() {
+  S._busy = true; setTyping(true); scrollBottom();
+  setTimeout(() => {
+    setTyping(false); pushMsg('msg', 'ai', crisis.REPLY);
+    $('#crisis').classList.add('on'); $('#calm-btn').classList.add('dis');
+    S._busy = false;
+    setTimeout(() => $('#calm-btn').classList.remove('dis'), crisis.TIMING.calm);
+  }, crisis.TIMING.typing);
+}
+function showNudge() {
+  S._nudged = true;
+  const d = document.createElement('div'); d.className = 'nudge';
+  d.innerHTML = '<span>最近睡得还好吗？想做一次 3 分钟呼吸，把身体先放下来。</span>';
+  const yes = document.createElement('button'); yes.textContent = '好，试一下';
+  yes.addEventListener('click', () => { d.remove(); toast('3 分钟呼吸练习即将开始（演示）'); addLamp(); });
+  d.appendChild(yes); $('#msgs').appendChild(d); scrollBottom();
+}
+function sendChat() {
+  const input = $('#chat-input'); const v = input.value.trim();
+  if (!v || S._busy) return;
+  input.value = ''; /* chat.js 语义：busy 由 runBranch/drill 独占，send 不设 */
+
+  pushMsg('msg', 'user', v);
+  if (crisis.isCrisis(v)) { triggerCrisis(); return; }
+  if (S._drill) { runDrill(v); return; }
+  const r = SC.route(v, S.mode);
+  if (r.confirm) { runBranch('sort'); return; }
+  runBranch(r.k);
+}
+$$('.modebar span').forEach(s => s.addEventListener('click', () => switchMode(s.dataset.mode)));
+$('#send-btn').addEventListener('click', sendChat);
+$('#chat-input').addEventListener('keydown', e => { if (e.key === 'Enter') sendChat(); });
+$('#calm-btn').addEventListener('click', () => { if (!$('#calm-btn').classList.contains('dis')) $('#crisis').classList.remove('on'); });
+
+/* ---------- content（疗愈） ---------- */
+function renderContent() {
+  const nbCount = S.jnl.length + 3;
+  $('#content-body').innerHTML = '<div class="gr-theme"><div class="lb">本周主题 · WEEKLY THEME</div><div class="tb">职场与人际关系经营</div><div class="tm">11月2日 – 11月8日 · 每周一更新 · 已更新 6 篇</div></div>' +
+    '<div class="nb" id="nb-open"><div class="nb-t">西米手记<span>XIMI\'S JOURNAL</span></div><div class="nb-line">今天，想留下点什么？</div><div class="nb-meta"><span>已记 ' + nbCount + ' 篇</span><span class="nb-go">打开写手记 ›</span></div></div>' +
+    CD.columns.map(c => '<div class="col-card" data-t="' + esc(c.title) + '"><div class="colbg"></div><div class="cb"><b>' + esc(c.title) + '</b><p>' + esc(c.desc || '本周荐读 · 与你的关系议题有关') + '</p></div></div>').join('');
+  $('#nb-open').addEventListener('click', openJnl);
+  $$('#content-body .col-card').forEach(c => c.addEventListener('click', () => toast('文章详情 · 演示版')));
+}
+function openJnl() {
+  $('#jnl-text').value = ''; $('#jnl-sheet').classList.add('on');
+  $('#jnl-chips').innerHTML = ['平静', '有点累', '说不清', '想被夸夸', '一点开心'].map((t, i) => '<span class="schip" data-i="' + i + '">' + t + '</span>').join('');
+  $$('#jnl-chips .schip').forEach(c => c.addEventListener('click', () => { $$('#jnl-chips .schip').forEach(x => x.classList.remove('on')); c.classList.add('on'); }));
+}
+$('#jnl-close').addEventListener('click', () => $('#jnl-sheet').classList.remove('on'));
+$('#jnl-send').addEventListener('click', () => {
+  const text = $('#jnl-text').value.trim();
+  if (!text) { toast('先写一句吧，哪怕一句也好'); return; }
+  if (crisis.isCrisis(text)) {
+    S.jnl.push(text); $('#jnl-text').value = ''; $('#jnl-sheet').classList.remove('on');
+    $('#crisis').classList.add('on'); $('#calm-btn').classList.add('dis');
+    setTimeout(() => $('#calm-btn').classList.remove('dis'), crisis.TIMING.calm);
+    return;
+  }
+  S.jnl.push(text); $('#jnl-text').value = ''; $('#jnl-sheet').classList.remove('on');
+  addLamp(); renderContent(); toast('已放进你的手记');
+});
+
+/* ---------- grow（变化） ---------- */
+function addLamp() { S.lamps += 1; toast('已记录 · 点亮一盏灯'); if (S.tab === 'grow') renderGrow(); }
+function renderGrow() {
+  let dots = '';
+  for (let i = 0; i < 30; i++) { const x = 4 + (i * 37) % 92, y = 8 + (i * 53) % 76; dots += '<span class="lamp' + (i < S.lamps ? '' : ' dim') + '" style="left:' + x + '%;top:' + y + '%"></span>'; }
+  $('#grow-body').innerHTML = '<div class="grow-hero"><div class="lamps">' + dots + '</div><div class="gt"><span>第 12 天</span><b>我的变化</b></div><div class="gl"><b>' + S.lamps + '</b> 盏灯亮着<div style="font-size:11px;color:#B9B2A0;margin-top:2px">每一次记录、每一次练习，都会点亮一盏</div></div></div>' +
+    '<div class="gstats"><div class="gstat"><b>12</b><span>连续天数</span></div><div class="gstat"><b>' + Math.min(S.lamps - 15, 3) + '</b><span>话术卡</span></div><div class="gstat"><b>7</b><span>次练习</span></div></div>' +
+    '<div class="tl"><div class="tl-item"><div class="tt">今天 · 17:40</div><div class="tx">和伴侣的对话演练 · 第 2 轮换了个开头，他没那么快进入防御</div><div class="tg">话术卡已存</div></div>' +
+    '<div class="tl-item"><div class="tt">昨天 · 23:10</div><div class="tx">情绪日记：孩子不是我一个人的事</div><div class="tg">书写疗愈 · 12 分钟</div></div></div>';
+}
+
+/* ---------- me ---------- */
+function renderMe() {
+  $('#me-body').innerHTML = '<div class="me-card"><div class="me-av">🌸</div><div><b>小美</b><span>加入西米 13 天 · 已记录 10 次 · 情感主题</span></div></div>' +
+    '<div class="member"><b>会员 · 陪跑中</b>有效期至 2027-11-05 · 到期前 7 天提醒续费</div>' +
+    '<div class="mrows">' + ['我的档案', '我的预约', '邀请闺蜜 · 双方各得7天体验', '设置'].map(t => '<div class="mrow" data-t="' + t + '">' + t + '</div>').join('') + '</div>';
+  $$('#me-body .mrow').forEach(r => r.addEventListener('click', () => toast(r.dataset.t + ' · 演示版')));
+}
+
+/* ---------- consultants / cdetail ---------- */
+function openConsultants() {
+  go('consultants'); $('#cons-body').innerHTML = '<div style="text-align:center;color:var(--ink3);font-size:13px;padding:40px 0">加载中…</div>';
+  api.fetchCounselors().then(list => {
+    $('#cons-body').innerHTML = '<div class="lede" style="padding:12px 18px 0;color:var(--ink2);font-size:13px">已按你的预诊断匹配 · 3 位</div>' + list.map(c =>
+      '<div class="c-card" data-id="' + c.id + '"><div class="c-av" style="background:linear-gradient(150deg,#C9A96E,#8C6B3E)">' + esc(c.name[0]) + '</div><div><b>' + esc(c.name) + '</b><div class="ct">' + esc(c.title) + '</div><div class="cp">¥' + c.price + ' / 50 分钟</div></div></div>').join('');
+    $$('#cons-body .c-card').forEach(c => c.addEventListener('click', () => openDetail(c.dataset.id)));
+  });
+}
+function openDetail(id) {
+  go('cdetail'); $('#cd-body').innerHTML = '<div style="text-align:center;color:var(--ink3);font-size:13px;padding:40px 0">加载中…</div>';
+  api.fetchCounselorDetail(id).then(c => {
+    S.cd = c; S.pickedSlot = -1;
+    $('#cd-body').innerHTML = '<div class="cd-head"><div class="cd-av" style="background:linear-gradient(150deg,#C9A96E,#8C6B3E)">' + esc(c.name[0]) + '</div><h3>' + esc(c.name) + '</h3><div class="ct">' + esc(c.title) + '</div></div>' +
+      '<div class="cd-stats">' + c.stats.map(s => '<div><b>' + s.n + '</b><span>' + s.label + '</span></div>').join('') + '</div>' +
+      '<div class="cd-body">' + esc(c.background) + '</div>' +
+      '<div class="cd-tags">' + c.tags.map(t => '<span>' + esc(t) + '</span>').join('') + '</div>' +
+      '<div class="lede" style="padding:14px 18px 0;color:var(--ink2);font-size:13px">选择咨询时段</div>' +
+      '<div class="slots">' + c.slots.map((s, i) => '<span class="slot" data-i="' + i + '">' + s + '</span>').join('') + '</div>' +
+      '<button class="btn" style="width:auto;margin:14px 18px 24px;padding:0 34px" id="cd-pay">预约 · ¥' + c.price + '</button>';
+    $$('#cd-body .slot').forEach(s => s.addEventListener('click', () => { $$('#cd-body .slot').forEach(x => x.classList.remove('on')); s.classList.add('on'); S.pickedSlot = +s.dataset.i; }));
+    $('#cd-pay').addEventListener('click', () => {
+      S.pickedSlot = S.pickedSlot >= 0 ? S.pickedSlot : 0;
+      $('#pay-who').textContent = c.name + ' · 单次咨询（50 分钟 · 视频连线）';
+      $('#pay-slot').textContent = c.slots[S.pickedSlot];
+      $('#pay-amt').textContent = '¥' + c.price + '.00';
+      $('#pay-sheet').classList.add('on');
+    });
+  });
+}
+$('#pay-close').addEventListener('click', () => $('#pay-sheet').classList.remove('on'));
+$('#pay-do').addEventListener('click', () => {
+  $('#pay-sheet').classList.remove('on');
+  toast('支付成功 · 已跳转企业微信 · 演示结束');
+  addLamp();
+});
+
+/* ---------- prediag / report ---------- */
+function openPrediag() {
+  go('prediag'); S.pd = { step: 0, qs: [], ans: [], running: true };
+  $('#pd-body').innerHTML = '<div style="text-align:center;color:var(--ink3);font-size:13px;padding:40px 0">加载中…</div>';
+  api.fetchPrediagQuestions().then(qs => { S.pd.qs = qs; S.pd.running = false; renderPd(); });
+}
+function renderPd() {
+  const p = S.pd, q = p.qs[p.step];
+  if (p.running) { $('#pd-body').innerHTML = '<div style="text-align:center;color:var(--ink3);font-size:13px;padding:30px 0 10px">西米正在输入…</div>'; return; }
+  $('#pd-body').innerHTML = '<div style="display:flex;gap:6px;justify-content:center;padding:18px 0 4px">' + p.qs.map((_, i) => '<span style="width:9px;height:9px;border-radius:50%;background:' + (i <= p.step ? 'var(--seal)' : 'var(--edge)') + '"></span>').join('') + '</div>' +
+    '<div style="padding:10px 20px"><div class="msg ai" style="max-width:100%;white-space:pre-wrap">' + esc(q.q) + '</div>' +
+    '<div class="on-opts" style="margin-top:14px">' + q.opts.map(o => '<div class="on-opt" data-o="' + esc(o) + '">' + esc(o) + '</div>').join('') + '</div></div>';
+  $$('#pd-body .on-opt').forEach(o => o.addEventListener('click', () => pdAnswer(o.dataset.o)));
+}
+function pdAnswer(opt) {
+  const p = S.pd; if (p.running) return; p.running = true;
+  p.ans.push(opt); p.step++;
+  if (p.step >= p.qs.length) {
+    $('#pd-body').innerHTML = '<div style="text-align:center;padding:60px 0;color:var(--ink2);font-size:14px">生成中…<br><span style="font-size:12px;color:var(--ink3)">正在把你的回答交给匹配算法</span></div>';
+    api.submitPrediagAnswers(p.ans).then(res => { S.report = res.report; setTimeout(() => { go('report'); renderReport(); }, 900); });
+    return;
+  }
+  setTimeout(() => { p.running = false; renderPd(); }, 500);
+}
+function renderReport() {
+  const r = S.report || {};
+  $('#rp-body').innerHTML = '<div class="rep"><div class="rh"><span>♡</span><b>初步诊断报告</b><span>PRE-DIAGNOSIS REPORT</span></div>' +
+    '<div class="sec"><div class="sl">核心情绪</div><div class="emotions">' + (r.emotions || []).map(e => '<span>' + esc(e) + '</span>').join('') + '</div></div>' +
+    '<div class="sec"><div class="sl">主要矛盾</div><p>' + esc(r.conflict || '') + '</p></div>' +
+    '<div class="sec"><div class="sl">咨询目标</div><p>' + esc(r.goal || '') + '</p></div>' +
+    '<div class="sec"><div class="sl">紧急程度</div><div class="ubar"><i style="width:' + Math.round((r.urgency ? r.urgency.level : 0.5) * 100) + '%"></i></div><p style="margin-top:6px">' + esc(r.urgency ? r.urgency.label : '') + '</p></div>' +
+    '<div class="sec"><div class="sl">建议方向</div><p>' + esc(r.direction || '') + '</p></div>' +
+    '<div class="disc">本报告由 AI 生成，仅供参考，不构成医疗诊断</div></div>' +
+    '<button class="btn" style="width:auto;margin:4px 18px 24px;padding:0 30px" id="rp-go">查看匹配咨询师（3 位）</button>';
+  $('#rp-go').addEventListener('click', openConsultants);
+}
+
+/* ---------- boot ---------- */
+window.S = S; window.SC = SC; window.crisis = crisis;
+renderOnboard(); go('onboard');
+setTimeout(() => { pushMsg('msg', 'ai', SC.greetByHour()); pushChips(SC.CHIPS_FRIEND); }, 400);
+</script></body></html>
