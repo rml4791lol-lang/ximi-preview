@@ -1,0 +1,559 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>西米 · 演示总览 —— 主支与 44 支风格</title>
+<style>
+:root{--paper:#F6F1E6;--card:#FBF8F0;--ink:#2E2824;--ink2:#6F636B;--seal:#B03A2E;--gold:#B08D3E;--line:rgba(120,90,70,.22)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:PingFang SC,-apple-system,sans-serif;line-height:1.65}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px 90px}
+/* 页眉：朱砂方印 + 竖排支数 */
+header{padding:54px 0 30px;border-bottom:3px double var(--line);display:flex;align-items:flex-end;gap:26px}
+.seal{width:74px;height:74px;background:var(--seal);color:#F6F1E6;font-family:Songti SC,STSong,serif;font-weight:700;font-size:30px;display:flex;align-items:center;justify-content:center;line-height:1.05;text-align:center;transform:rotate(-2.5deg);box-shadow:2px 3px 0 rgba(46,40,36,.18);flex:none;letter-spacing:2px}
+h1{font-family:Songti SC,STSong,serif;font-size:34px;font-weight:900;margin:0;letter-spacing:.06em}
+.sub{color:var(--ink2);font-size:14px;margin-top:6px}
+.vcount{margin-left:auto;writing-mode:vertical-rl;font-family:Songti SC,STSong,serif;font-size:15px;letter-spacing:.35em;color:var(--seal);border-left:1.5px solid var(--seal);padding-left:10px;height:110px}
+h2{font-family:Songti SC,STSong,serif;font-size:22px;font-weight:900;letter-spacing:.08em;margin:56px 0 8px;display:flex;align-items:center;gap:12px}
+h2 .mark{width:12px;height:12px;background:var(--seal);flex:none}
+h2 .en{font-size:12px;color:var(--ink2);font-weight:400;letter-spacing:.18em}
+.lede{color:var(--ink2);font-size:14px;margin:0 0 18px}
+/* 演示清单 */
+.demos{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.demo{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:16px 18px}
+.demo b{font-size:15px;display:block;margin-bottom:4px}
+.demo span{font-size:13px;color:var(--ink2)}
+.demo .dt{display:inline-block;font-size:11px;color:var(--seal);border:1px solid var(--seal);border-radius:2px;padding:0 5px;margin-bottom:8px}
+/* 主支 */
+.mainshot{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.mainshot figure{margin:0}
+.mainshot img{width:100%;display:block;border:1px solid var(--line);border-radius:4px}
+.mainshot figcaption{text-align:center;font-size:12px;color:var(--ink2);margin-top:5px}
+.statusline{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 0}
+.statusline span{background:var(--card);border:1px solid var(--line);border-radius:3px;padding:5px 12px;font-size:13px}
+.statusline b{color:var(--seal)}
+/* 分支树 */
+.tree{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:18px 20px;font-family:Menlo,monospace;font-size:13px;line-height:2;overflow-x:auto}
+.tree .m{color:var(--seal);font-weight:700}
+.tree .dim{color:var(--ink2)}
+/* 画廊 */
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 18px}
+.pill{background:none;border:1px solid var(--line);border-radius:999px;padding:5px 14px;font-size:13px;color:var(--ink2);cursor:pointer}
+.pill.on{background:var(--seal);border-color:var(--seal);color:#F6F1E6}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.scard{background:var(--card);border:1px solid var(--line);border-radius:4px;overflow:hidden;display:flex;flex-direction:column}
+.scard-top{padding:12px 12px 0}
+.cover{width:100%;display:block;border:1px solid var(--line);border-radius:3px;aspect-ratio:390/844;object-fit:cover;object-position:top}
+.scard-body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:3px}
+.scard-name{font-family:Songti SC,STSong,serif;font-size:17px;font-weight:900}
+.scard-branch{font-family:Menlo,monospace;font-size:11px;color:var(--seal)}
+.scard-branch .tip{color:var(--ink2)}
+.scard-mood{font-size:13px;color:var(--gold)}
+.scard-ref,.scard-sig{font-size:12px;color:var(--ink2)}
+.cmdrow{display:flex;align-items:center;gap:8px;margin-top:8px}
+.cmdrow code{font-family:Menlo,monospace;font-size:11px;background:rgba(46,40,36,.06);border-radius:3px;padding:3px 8px;color:var(--ink)}
+.copybtn{background:none;border:1px solid var(--line);border-radius:3px;padding:2px 9px;font-size:11px;color:var(--ink2);cursor:pointer}
+.expander{display:none;margin-top:10px}
+.scard.open .expander{display:block}
+.expander .pages{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.expander img{width:100%;border:1px solid var(--line);border-radius:3px}
+.expander .cap{text-align:center;font-size:11px;color:var(--ink2);margin-top:5px}
+.vers{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.ver{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:14px 16px}
+.vh{font-family:Songti SC,STSong,serif;font-size:16px;font-weight:900}
+.vn{font-size:12px;color:var(--ink2);margin:3px 0 10px}
+.vshots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.vshots img{width:100%;border:1px solid var(--line);border-radius:3px;display:block}
+footer{margin-top:70px;border-top:1px solid var(--line);padding-top:16px;color:var(--ink2);font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+@media(max-width:760px){.mainshot{grid-template-columns:repeat(2,1fr)}.vcount{display:none}header{flex-wrap:wrap}}
+@media(prefers-reduced-motion:no-preference){.scard{transition:border-color .15s}.scard:hover{border-color:var(--seal)}}
+</style></head><body><div class="wrap">
+<header><div class="seal">西米</div><div><h1>西米 · 演示总览</h1><div class="sub">主支 main（浓墨手记 v16）· 提审线 release/1007 · 风格分支 44 支 —— 全部在此，功能零差异，只有皮肤不同</div></div><div class="vcount">风格四十四支</div></header>
+
+<h2><span class="mark"></span>演示清单<span class="en">WHAT TO TRY</span></h2>
+<div class="demos">
+<div class="demo"><span class="dt">真机</span><b>体验版 1.0.3</b><span>微信里已发布的体验版；扫码即用，当前线上基线。</span></div>
+<div class="demo"><span class="dt">待提审</span><b>提审线 release/1007 · 1.0.10</b><span>提交审核前的完整工程线：内容安全 fail-closed、发布环 E2E 已验；支付批已加固（102/102 测试绿），启用收款只差商户号配置。</span></div>
+<div class="demo"><span class="dt">在线</span><b>西米独立演示 · workbuddy.host</b><span>单文件网页演示（81KB 零外链），给没装微信的主理人快速看交互。</span></div>
+<div class="demo"><span class="dt">公网</span><b>本页 · 静态托管</b><span>当前页面已发布公网：<a style="color:var(--seal)" href="/xixi/site/%E6%BC%94%E7%A4%BA%E6%80%BB%E8%A7%88.html">/xixi/site/%E6%BC%94%E7%A4%BA%E6%80%BB%E8%A7%88.html</a>（姊妹文件 风格画廊/切换器 同目录可得）。</span></div>
+<div class="demo"><span class="dt">工程</span><b>自检工具链</b><span>gate 五步门禁 + probe 16 页运行时走查 + 红队六波记录，全在 .scratch/pre-submit-r1/。</span></div>
+</div>
+
+<h2><span class="mark"></span>主支 main —— 浓墨手记 v16<span class="en">THE TRUNK</span></h2>
+<p class="lede">现状即此皮：观夏式墨色纸感。下面是 main 实拍（tip a803bde）。</p>
+<div class="mainshot"><figure><img src="gallery/main-home.jpg" alt="主支 首页"><figcaption>首页</figcaption></figure><figure><img src="gallery/main-chat.jpg" alt="主支 西米聊天"><figcaption>西米聊天</figcaption></figure><figure><img src="gallery/main-content.jpg" alt="主支 每日成长"><figcaption>每日成长</figcaption></figure><figure><img src="gallery/main-grow.jpg" alt="主支 我的变化"><figcaption>我的变化</figcaption></figure><figure><img src="gallery/main-me.jpg" alt="主支 我的"><figcaption>我的</figcaption></figure></div>
+<div class="statusline">
+<span>前端 main：<b>a803bde</b></span><span>提审线：<b>release/1007</b>（bd303ad）</span><span>backend：<b>102/102</b> 测试绿</span><span>gate ✓ · probe <b>16/16</b></span><span>票 102/104 待裁定</span>
+</div>
+
+<h2><span class="mark"></span>版本线 —— 现版 / 提审版 / 老版<span class="en">VERSIONS</span></h2>
+<p class="lede">同一个产品走过的三代：复刻基线（老版）→ 提审工程线（1.0.10）→ 主支现版（浓墨手记）。</p>
+<div class="vers">
+<div class="ver"><div class="vh">现版 · main 浓墨手记 v16</div><div class="vn">前端 a803bde · 16 页 · 风格 44 支的底座</div><div class="vshots"><img src="gallery/main-home.jpg" alt="现版首页"><img src="gallery/main-chat.jpg" alt="现版聊天"><img src="gallery/main-me.jpg" alt="现版我的"></div></div>
+<div class="ver"><div class="vh">提审版 · release/1007（1.0.10）</div><div class="vn">前端 bd303ad · 提审工程线：无 grow 页（15/16 probe）· 支付批加固 102/102</div><div class="vshots"><img src="gallery/release-home.jpg" alt="提审版首页"><img src="gallery/release-chat.jpg" alt="提审版聊天"><img src="gallery/release-me.jpg" alt="提审版我的"></div></div>
+<div class="ver"><div class="vh">老版 · frontend-base 复刻基线（10-07）</div><div class="vn">13 页时代的起点（probe 13/16）· 网页复刻转小程序的第一版</div><div class="vshots"><img src="gallery/old-home.jpg" alt="老版首页"><img src="gallery/old-chat.jpg" alt="老版聊天"><img src="gallery/old-me.jpg" alt="老版我的"></div></div>
+</div>
+
+<h2><span class="mark"></span>分支结构<span class="en">BRANCH MAP</span></h2>
+<div class="tree">
+<span class="m">main</span> ← 一切分支的底座（切哪支都从它长出来）<br>
+├── <span class="m">release/1007</span> <span class="dim">提审线：1.0.10 待提审；支付批加固、内容安全、发布环</span><br>
+├── <span class="dim">backend/release/1007</span> <span class="dim">云函数（xixiChat/xixiData/xixiSync/payOrder/payCallback）</span><br>
+└── style/* × 44 <span class="dim">每支 = 独立完整皮肤，功能与 main 完全一致</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="dim">挑定一支 → 合回 main → 真机走查 → 提审；也可「A 的色 + B 的签名」杂交</span>
+</div>
+
+<h2><span class="mark"></span>风格画廊<span class="en">44 SKINS</span></h2>
+<p class="lede">点卡片展开五页实拍与切换命令；按情绪四族过滤。</p>
+<div class="pills"><button class="pill on" data-f="全部">全部</button><button class="pill" data-f="东方安静">东方安静</button><button class="pill" data-f="现代克制">现代克制</button><button class="pill" data-f="深夜温柔">深夜温柔</button><button class="pill" data-f="有性格">有性格</button></div>
+<div class="grid" id="grid"><article class="scard" data-fam="东方安静">
+<div class="scard-top"><img class="cover" src="gallery/qinglv-home.jpg" alt="青绿山水 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">青绿山水</div>
+<div class="scard-branch">style/qinglv <span class="tip">· 5132dbc</span></div>
+<div class="scard-mood">「把情绪放进足够大的山河里，问题会显得小」</div>
+<div class="scard-ref">参考：《千里江山图》石青石绿+泥金</div>
+<div class="scard-sig">签名：泥金勾边印+hero 绢色滤镜</div>
+<div class="cmdrow"><code>git checkout style/qinglv</code><button class="copybtn" data-cmd="git checkout style/qinglv">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/qinglv-home.jpg" alt="青绿山水 首页" loading="lazy"><img src="gallery/qinglv-chat.jpg" alt="青绿山水 西米聊天" loading="lazy"><img src="gallery/qinglv-content.jpg" alt="青绿山水 每日成长" loading="lazy"><img src="gallery/qinglv-grow.jpg" alt="青绿山水 我的变化" loading="lazy"><img src="gallery/qinglv-me.jpg" alt="青绿山水 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="深夜温柔">
+<div class="scard-top"><img class="cover" src="gallery/indigo-home.jpg" alt="蓝染 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">蓝染</div>
+<div class="scard-branch">style/indigo <span class="tip">· f9d0b54</span></div>
+<div class="scard-mood">「深水的安静——夜里的情绪是靛蓝的」</div>
+<div class="scard-ref">参考：蓝染布/浮世绘对色（靛蓝×朱印）</div>
+<div class="scard-sig">签名：朱印（浮世绘经典对色）</div>
+<div class="cmdrow"><code>git checkout style/indigo</code><button class="copybtn" data-cmd="git checkout style/indigo">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/indigo-home.jpg" alt="蓝染 首页" loading="lazy"><img src="gallery/indigo-chat.jpg" alt="蓝染 西米聊天" loading="lazy"><img src="gallery/indigo-content.jpg" alt="蓝染 每日成长" loading="lazy"><img src="gallery/indigo-grow.jpg" alt="蓝染 我的变化" loading="lazy"><img src="gallery/indigo-me.jpg" alt="蓝染 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="有性格">
+<div class="scard-top"><img class="cover" src="gallery/deco-home.jpg" alt="装饰艺术 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">装饰艺术</div>
+<div class="scard-branch">style/deco <span class="tip">· 5f0926d</span></div>
+<div class="scard-mood">「把「整理心情」做成仪式——秩序即安抚」</div>
+<div class="scard-ref">参考：1920s Art Deco（墨绿×香槟金）</div>
+<div class="scard-sig">签名：卡片双线金框</div>
+<div class="cmdrow"><code>git checkout style/deco</code><button class="copybtn" data-cmd="git checkout style/deco">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/deco-home.jpg" alt="装饰艺术 首页" loading="lazy"><img src="gallery/deco-chat.jpg" alt="装饰艺术 西米聊天" loading="lazy"><img src="gallery/deco-content.jpg" alt="装饰艺术 每日成长" loading="lazy"><img src="gallery/deco-grow.jpg" alt="装饰艺术 我的变化" loading="lazy"><img src="gallery/deco-me.jpg" alt="装饰艺术 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="有性格">
+<div class="scard-top"><img class="cover" src="gallery/riso-home.jpg" alt="孔雀印刷 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">孔雀印刷</div>
+<div class="scard-branch">style/riso <span class="tip">· 0f2227c</span></div>
+<div class="scard-mood">「直白、年轻、「说出来不丢人」」</div>
+<div class="scard-ref">参考：Riso 双色印刷（荧光粉×印刷蓝）</div>
+<div class="scard-sig">签名：hero 网点点阵</div>
+<div class="cmdrow"><code>git checkout style/riso</code><button class="copybtn" data-cmd="git checkout style/riso">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/riso-home.jpg" alt="孔雀印刷 首页" loading="lazy"><img src="gallery/riso-chat.jpg" alt="孔雀印刷 西米聊天" loading="lazy"><img src="gallery/riso-content.jpg" alt="孔雀印刷 每日成长" loading="lazy"><img src="gallery/riso-grow.jpg" alt="孔雀印刷 我的变化" loading="lazy"><img src="gallery/riso-me.jpg" alt="孔雀印刷 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="深夜温柔">
+<div class="scard-top"><img class="cover" src="gallery/monet-home.jpg" alt="柔光印象 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">柔光印象</div>
+<div class="scard-branch">style/monet <span class="tip">· a9d759a</span></div>
+<div class="scard-mood">「被柔光包住——情绪是水面光斑，会散不会淹」</div>
+<div class="scard-ref">参考：莫奈《睡莲》（灰紫+湖绿光斑）</div>
+<div class="scard-sig">签名：全页三层光斑氛围层</div>
+<div class="cmdrow"><code>git checkout style/monet</code><button class="copybtn" data-cmd="git checkout style/monet">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/monet-home.jpg" alt="柔光印象 首页" loading="lazy"><img src="gallery/monet-chat.jpg" alt="柔光印象 西米聊天" loading="lazy"><img src="gallery/monet-content.jpg" alt="柔光印象 每日成长" loading="lazy"><img src="gallery/monet-grow.jpg" alt="柔光印象 我的变化" loading="lazy"><img src="gallery/monet-me.jpg" alt="柔光印象 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="现代克制">
+<div class="scard-top"><img class="cover" src="gallery/swiss-home.jpg" alt="瑞士网格 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">瑞士网格</div>
+<div class="scard-branch">style/swiss <span class="tip">· 8d86a22</span></div>
+<div class="scard-mood">「冷静清晰不煽情——「说清楚」即安抚」</div>
+<div class="scard-ref">参考：International Typographic Style</div>
+<div class="scard-sig">签名：全站去圆角+hero 黑白化+信号红</div>
+<div class="cmdrow"><code>git checkout style/swiss</code><button class="copybtn" data-cmd="git checkout style/swiss">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/swiss-home.jpg" alt="瑞士网格 首页" loading="lazy"><img src="gallery/swiss-chat.jpg" alt="瑞士网格 西米聊天" loading="lazy"><img src="gallery/swiss-content.jpg" alt="瑞士网格 每日成长" loading="lazy"><img src="gallery/swiss-grow.jpg" alt="瑞士网格 我的变化" loading="lazy"><img src="gallery/swiss-me.jpg" alt="瑞士网格 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="有性格">
+<div class="scard-top"><img class="cover" src="gallery/wabi-home.jpg" alt="侘寂 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">侘寂</div>
+<div class="scard-branch">style/wabi <span class="tip">· ae026a2</span></div>
+<div class="scard-mood">「不完美也可以被看见——毛边不需要修剪」</div>
+<div class="scard-ref">参考：土墙粗纸锈印、不对称</div>
+<div class="scard-sig">签名：粗纸肌理+不对称对角卡角</div>
+<div class="cmdrow"><code>git checkout style/wabi</code><button class="copybtn" data-cmd="git checkout style/wabi">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/wabi-home.jpg" alt="侘寂 首页" loading="lazy"><img src="gallery/wabi-chat.jpg" alt="侘寂 西米聊天" loading="lazy"><img src="gallery/wabi-content.jpg" alt="侘寂 每日成长" loading="lazy"><img src="gallery/wabi-grow.jpg" alt="侘寂 我的变化" loading="lazy"><img src="gallery/wabi-me.jpg" alt="侘寂 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="深夜温柔">
+<div class="scard-top"><img class="cover" src="gallery/taisho-home.jpg" alt="大正浪漫 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">大正浪漫</div>
+<div class="scard-branch">style/taisho <span class="tip">· 7cda797</span></div>
+<div class="scard-mood">「旧时代的新女性——温柔里带主见」</div>
+<div class="scard-ref">参考：和洋折衷（绢玫瑰×胭脂×苍绿印）</div>
+<div class="scard-sig">签名：双色缎带卡</div>
+<div class="cmdrow"><code>git checkout style/taisho</code><button class="copybtn" data-cmd="git checkout style/taisho">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/taisho-home.jpg" alt="大正浪漫 首页" loading="lazy"><img src="gallery/taisho-chat.jpg" alt="大正浪漫 西米聊天" loading="lazy"><img src="gallery/taisho-content.jpg" alt="大正浪漫 每日成长" loading="lazy"><img src="gallery/taisho-grow.jpg" alt="大正浪漫 我的变化" loading="lazy"><img src="gallery/taisho-me.jpg" alt="大正浪漫 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="有性格">
+<div class="scard-top"><img class="cover" src="gallery/botanical-home.jpg" alt="博物学手绘 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">博物学手绘</div>
+<div class="scard-branch">style/botanical <span class="tip">· 9ca4d33</span></div>
+<div class="scard-mood">「把情绪当标本观察——观察即消化」</div>
+<div class="scard-ref">参考：19 世纪标本册（橄榄叶绿+树皮印）</div>
+<div class="scard-sig">签名：学名斜体标注+标本框</div>
+<div class="cmdrow"><code>git checkout style/botanical</code><button class="copybtn" data-cmd="git checkout style/botanical">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/botanical-home.jpg" alt="博物学手绘 首页" loading="lazy"><img src="gallery/botanical-chat.jpg" alt="博物学手绘 西米聊天" loading="lazy"><img src="gallery/botanical-content.jpg" alt="博物学手绘 每日成长" loading="lazy"><img src="gallery/botanical-grow.jpg" alt="博物学手绘 我的变化" loading="lazy"><img src="gallery/botanical-me.jpg" alt="博物学手绘 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="东方安静">
+<div class="scard-top"><img class="cover" src="gallery/songjin-home.jpg" alt="宋锦 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">宋锦</div>
+<div class="scard-branch">style/songjin <span class="tip">· 5aca982</span></div>
+<div class="scard-mood">「情绪织进锦缎——乱的是织法不是线」</div>
+<div class="scard-ref">参考：宋锦织物（紫墨金线织锦）</div>
+<div class="scard-sig">签名：三色织锦嵌线</div>
+<div class="cmdrow"><code>git checkout style/songjin</code><button class="copybtn" data-cmd="git checkout style/songjin">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/songjin-home.jpg" alt="宋锦 首页" loading="lazy"><img src="gallery/songjin-chat.jpg" alt="宋锦 西米聊天" loading="lazy"><img src="gallery/songjin-content.jpg" alt="宋锦 每日成长" loading="lazy"><img src="gallery/songjin-grow.jpg" alt="宋锦 我的变化" loading="lazy"><img src="gallery/songjin-me.jpg" alt="宋锦 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="现代克制">
+<div class="scard-top"><img class="cover" src="gallery/morandi-home.jpg" alt="莫兰迪灰调 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">莫兰迪灰调</div>
+<div class="scard-branch">style/morandi <span class="tip">· a1017a7</span></div>
+<div class="scard-mood">「情绪不必浓烈——淡淡的也值得被认真对待」</div>
+<div class="scard-ref">参考：Giorgio Morandi 静物（一切颜色退半步）</div>
+<div class="scard-sig">签名：全站去高光+hero 去饱和</div>
+<div class="cmdrow"><code>git checkout style/morandi</code><button class="copybtn" data-cmd="git checkout style/morandi">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/morandi-home.jpg" alt="莫兰迪灰调 首页" loading="lazy"><img src="gallery/morandi-chat.jpg" alt="莫兰迪灰调 西米聊天" loading="lazy"><img src="gallery/morandi-content.jpg" alt="莫兰迪灰调 每日成长" loading="lazy"><img src="gallery/morandi-grow.jpg" alt="莫兰迪灰调 我的变化" loading="lazy"><img src="gallery/morandi-me.jpg" alt="莫兰迪灰调 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="东方安静">
+<div class="scard-top"><img class="cover" src="gallery/tangcai-home.jpg" alt="唐三彩 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">唐三彩</div>
+<div class="scard-branch">style/tangcai <span class="tip">· e8fd02b</span></div>
+<div class="scard-mood">「情绪像釉色一样会流——高温里交融成新颜色」</div>
+<div class="scard-ref">参考：唐三彩釉色（琥珀×彩绿×酱釉流釉）</div>
+<div class="scard-sig">签名：雾光卡三彩流釉渐变</div>
+<div class="cmdrow"><code>git checkout style/tangcai</code><button class="copybtn" data-cmd="git checkout style/tangcai">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/tangcai-home.jpg" alt="唐三彩 首页" loading="lazy"><img src="gallery/tangcai-chat.jpg" alt="唐三彩 西米聊天" loading="lazy"><img src="gallery/tangcai-content.jpg" alt="唐三彩 每日成长" loading="lazy"><img src="gallery/tangcai-grow.jpg" alt="唐三彩 我的变化" loading="lazy"><img src="gallery/tangcai-me.jpg" alt="唐三彩 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="有性格">
+<div class="scard-top"><img class="cover" src="gallery/hokusai-home.jpg" alt="浮世绘浪 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">浮世绘浪</div>
+<div class="scard-branch">style/hokusai <span class="tip">· 08a1ca4</span></div>
+<div class="scard-mood">「情绪是浪——会起会落，浪底下的深蓝一直在」</div>
+<div class="scard-ref">参考：葛饰北斋《神奈川冲浪里》（普鲁士蓝×白浪×朱印）</div>
+<div class="scard-sig">签名：卡底卷浪线+朱印落款</div>
+<div class="cmdrow"><code>git checkout style/hokusai</code><button class="copybtn" data-cmd="git checkout style/hokusai">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/hokusai-home.jpg" alt="浮世绘浪 首页" loading="lazy"><img src="gallery/hokusai-chat.jpg" alt="浮世绘浪 西米聊天" loading="lazy"><img src="gallery/hokusai-content.jpg" alt="浮世绘浪 每日成长" loading="lazy"><img src="gallery/hokusai-grow.jpg" alt="浮世绘浪 我的变化" loading="lazy"><img src="gallery/hokusai-me.jpg" alt="浮世绘浪 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="有性格">
+<div class="scard-top"><img class="cover" src="gallery/persian-home.jpg" alt="波斯细密画 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">波斯细密画</div>
+<div class="scard-branch">style/persian <span class="tip">· 9bc0016</span></div>
+<div class="scard-mood">「情绪是手抄本里的插画——被精心装帧的心事」</div>
+<div class="scard-ref">参考：波斯手抄本（宝蓝×金箔×赭陶）</div>
+<div class="scard-sig">签名：三色宝蓝金框</div>
+<div class="cmdrow"><code>git checkout style/persian</code><button class="copybtn" data-cmd="git checkout style/persian">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/persian-home.jpg" alt="波斯细密画 首页" loading="lazy"><img src="gallery/persian-chat.jpg" alt="波斯细密画 西米聊天" loading="lazy"><img src="gallery/persian-content.jpg" alt="波斯细密画 每日成长" loading="lazy"><img src="gallery/persian-grow.jpg" alt="波斯细密画 我的变化" loading="lazy"><img src="gallery/persian-me.jpg" alt="波斯细密画 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="有性格">
+<div class="scard-top"><img class="cover" src="gallery/memphis-home.jpg" alt="孟菲斯 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">孟菲斯</div>
+<div class="scard-branch">style/memphis <span class="tip">· cfaf5aa</span></div>
+<div class="scard-mood">「情绪可以好玩——明亮的也可以是真话」</div>
+<div class="scard-ref">参考：1980s Memphis Design（撞色几何+硬阴影）</div>
+<div class="scard-sig">签名：卡片硬阴影轮换（黄/紫/橘）</div>
+<div class="cmdrow"><code>git checkout style/memphis</code><button class="copybtn" data-cmd="git checkout style/memphis">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/memphis-home.jpg" alt="孟菲斯 首页" loading="lazy"><img src="gallery/memphis-chat.jpg" alt="孟菲斯 西米聊天" loading="lazy"><img src="gallery/memphis-content.jpg" alt="孟菲斯 每日成长" loading="lazy"><img src="gallery/memphis-grow.jpg" alt="孟菲斯 我的变化" loading="lazy"><img src="gallery/memphis-me.jpg" alt="孟菲斯 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="有性格">
+<div class="scard-top"><img class="cover" src="gallery/muke-home.jpg" alt="黑白木刻 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">黑白木刻</div>
+<div class="scard-branch">style/muke <span class="tip">· 13f1b19</span></div>
+<div class="scard-mood">「情绪刻在木头上——一刀是一刀」</div>
+<div class="scard-ref">参考：黑白木刻版画（纯黑白粗刻线）</div>
+<div class="scard-sig">签名：三线黑刻框+反白标题</div>
+<div class="cmdrow"><code>git checkout style/muke</code><button class="copybtn" data-cmd="git checkout style/muke">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/muke-home.jpg" alt="黑白木刻 首页" loading="lazy"><img src="gallery/muke-chat.jpg" alt="黑白木刻 西米聊天" loading="lazy"><img src="gallery/muke-content.jpg" alt="黑白木刻 每日成长" loading="lazy"><img src="gallery/muke-grow.jpg" alt="黑白木刻 我的变化" loading="lazy"><img src="gallery/muke-me.jpg" alt="黑白木刻 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="现代克制">
+<div class="scard-top"><img class="cover" src="gallery/terrazzo-home.jpg" alt="水磨石 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">水磨石</div>
+<div class="scard-branch">style/terrazzo <span class="tip">· 4497ba5</span></div>
+<div class="scard-mood">「情绪是水磨石里的石屑——磨在一起才完整」</div>
+<div class="scard-ref">参考：Venetian Terrazzo（多彩碎石屑）</div>
+<div class="scard-sig">签名：全页碎石点缀层</div>
+<div class="cmdrow"><code>git checkout style/terrazzo</code><button class="copybtn" data-cmd="git checkout style/terrazzo">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/terrazzo-home.jpg" alt="水磨石 首页" loading="lazy"><img src="gallery/terrazzo-chat.jpg" alt="水磨石 西米聊天" loading="lazy"><img src="gallery/terrazzo-content.jpg" alt="水磨石 每日成长" loading="lazy"><img src="gallery/terrazzo-grow.jpg" alt="水磨石 我的变化" loading="lazy"><img src="gallery/terrazzo-me.jpg" alt="水磨石 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="东方安静">
+<div class="scard-top"><img class="cover" src="gallery/xinzhongshi-home.jpg" alt="新中式 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">新中式</div>
+<div class="scard-branch">style/xinzhongshi <span class="tip">· f11d32e</span></div>
+<div class="scard-mood">「传统给骨架，现代给呼吸」</div>
+<div class="scard-ref">参考：新中式室内（现代骨架+紫檀黄铜）</div>
+<div class="scard-sig">签名：黄铜细线+紫檀左签</div>
+<div class="cmdrow"><code>git checkout style/xinzhongshi</code><button class="copybtn" data-cmd="git checkout style/xinzhongshi">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/xinzhongshi-home.jpg" alt="新中式 首页" loading="lazy"><img src="gallery/xinzhongshi-chat.jpg" alt="新中式 西米聊天" loading="lazy"><img src="gallery/xinzhongshi-content.jpg" alt="新中式 每日成长" loading="lazy"><img src="gallery/xinzhongshi-grow.jpg" alt="新中式 我的变化" loading="lazy"><img src="gallery/xinzhongshi-me.jpg" alt="新中式 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="深夜温柔">
+<div class="scard-top"><img class="cover" src="gallery/mucha-home.jpg" alt="慕夏新艺术 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">慕夏新艺术</div>
+<div class="scard-branch">style/mucha <span class="tip">· eeed39e</span></div>
+<div class="scard-mood">「被花环围住——装饰是关怀的形状」</div>
+<div class="scard-ref">参考：Alfons Mucha（石膏绿+玫瑰金棕）</div>
+<div class="scard-sig">签名：拱形对角圆角曲线框</div>
+<div class="cmdrow"><code>git checkout style/mucha</code><button class="copybtn" data-cmd="git checkout style/mucha">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/mucha-home.jpg" alt="慕夏新艺术 首页" loading="lazy"><img src="gallery/mucha-chat.jpg" alt="慕夏新艺术 西米聊天" loading="lazy"><img src="gallery/mucha-content.jpg" alt="慕夏新艺术 每日成长" loading="lazy"><img src="gallery/mucha-grow.jpg" alt="慕夏新艺术 我的变化" loading="lazy"><img src="gallery/mucha-me.jpg" alt="慕夏新艺术 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="现代克制">
+<div class="scard-top"><img class="cover" src="gallery/ulm-home.jpg" alt="乌尔姆学院 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">乌尔姆学院</div>
+<div class="scard-branch">style/ulm <span class="tip">· 7bc68b1</span></div>
+<div class="scard-mood">「理性本身是温柔的——一切有条理」</div>
+<div class="scard-ref">参考：Ulm School（系统灰白+系统黄）</div>
+<div class="scard-sig">签名：卡片族黑左轨+黄轨点缀</div>
+<div class="cmdrow"><code>git checkout style/ulm</code><button class="copybtn" data-cmd="git checkout style/ulm">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/ulm-home.jpg" alt="乌尔姆学院 首页" loading="lazy"><img src="gallery/ulm-chat.jpg" alt="乌尔姆学院 西米聊天" loading="lazy"><img src="gallery/ulm-content.jpg" alt="乌尔姆学院 每日成长" loading="lazy"><img src="gallery/ulm-grow.jpg" alt="乌尔姆学院 我的变化" loading="lazy"><img src="gallery/ulm-me.jpg" alt="乌尔姆学院 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="东方安静">
+<div class="scard-top"><img class="cover" src="gallery/dunhuang-home.jpg" alt="敦煌壁画 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">敦煌壁画</div>
+<div class="scard-branch">style/dunhuang <span class="tip">· 1e92112</span></div>
+<div class="scard-mood">「千年洞窟里颜料仍在——被时间验证过的颜色」</div>
+<div class="scard-ref">参考：莫高窟壁画（土红石青金箔）</div>
+<div class="scard-sig">签名：三色嵌线框+藻井扇纹</div>
+<div class="cmdrow"><code>git checkout style/dunhuang</code><button class="copybtn" data-cmd="git checkout style/dunhuang">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/dunhuang-home.jpg" alt="敦煌壁画 首页" loading="lazy"><img src="gallery/dunhuang-chat.jpg" alt="敦煌壁画 西米聊天" loading="lazy"><img src="gallery/dunhuang-content.jpg" alt="敦煌壁画 每日成长" loading="lazy"><img src="gallery/dunhuang-grow.jpg" alt="敦煌壁画 我的变化" loading="lazy"><img src="gallery/dunhuang-me.jpg" alt="敦煌壁画 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="深夜温柔">
+<div class="scard-top"><img class="cover" src="gallery/midnight-home.jpg" alt="夜航 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">夜航</div>
+<div class="scard-branch">style/midnight <span class="tip">· d6163e8</span></div>
+<div class="scard-mood">「凌晨三点的屏幕不该用白光刺人」</div>
+<div class="scard-ref">参考：深夜树洞（近黑蓝夜空+月光金+星子）</div>
+<div class="scard-sig">签名：星子点缀+夜幕 veil</div>
+<div class="cmdrow"><code>git checkout style/midnight</code><button class="copybtn" data-cmd="git checkout style/midnight">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/midnight-home.jpg" alt="夜航 首页" loading="lazy"><img src="gallery/midnight-chat.jpg" alt="夜航 西米聊天" loading="lazy"><img src="gallery/midnight-content.jpg" alt="夜航 每日成长" loading="lazy"><img src="gallery/midnight-grow.jpg" alt="夜航 我的变化" loading="lazy"><img src="gallery/midnight-me.jpg" alt="夜航 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="东方安静">
+<div class="scard-top"><img class="cover" src="gallery/qinghua-home.jpg" alt="青花瓷 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">青花瓷</div>
+<div class="scard-branch">style/qinghua <span class="tip">· 997cd83</span></div>
+<div class="scard-mood">「心事画在瓷上——经窑火也不褪色」</div>
+<div class="scard-ref">参考：青花瓷（瓷白钴蓝缠枝纹）</div>
+<div class="scard-sig">签名：缠枝竖纹+三层青花嵌线</div>
+<div class="cmdrow"><code>git checkout style/qinghua</code><button class="copybtn" data-cmd="git checkout style/qinghua">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/qinghua-home.jpg" alt="青花瓷 首页" loading="lazy"><img src="gallery/qinghua-chat.jpg" alt="青花瓷 西米聊天" loading="lazy"><img src="gallery/qinghua-content.jpg" alt="青花瓷 每日成长" loading="lazy"><img src="gallery/qinghua-grow.jpg" alt="青花瓷 我的变化" loading="lazy"><img src="gallery/qinghua-me.jpg" alt="青花瓷 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="东方安静">
+<div class="scard-top"><img class="cover" src="gallery/ruyao-home.jpg" alt="汝窑天青 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">汝窑天青</div>
+<div class="scard-branch">style/ruyao <span class="tip">· 05e0641</span></div>
+<div class="scard-mood">「安静的极致是所有内容属于同一个调子」</div>
+<div class="scard-ref">参考：宋瓷单色釉（天青一色族+冰裂纹）</div>
+<div class="scard-sig">签名：冰裂纹开片</div>
+<div class="cmdrow"><code>git checkout style/ruyao</code><button class="copybtn" data-cmd="git checkout style/ruyao">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/ruyao-home.jpg" alt="汝窑天青 首页" loading="lazy"><img src="gallery/ruyao-chat.jpg" alt="汝窑天青 西米聊天" loading="lazy"><img src="gallery/ruyao-content.jpg" alt="汝窑天青 每日成长" loading="lazy"><img src="gallery/ruyao-grow.jpg" alt="汝窑天青 我的变化" loading="lazy"><img src="gallery/ruyao-me.jpg" alt="汝窑天青 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="东方安静">
+<div class="scard-top"><img class="cover" src="gallery/songce-home.jpg" alt="宋册朱批 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">宋册朱批</div>
+<div class="scard-branch">style/songce <span class="tip">· 789cf1f</span></div>
+<div class="scard-mood">「你是唯一有资格在自己心上批注的人」</div>
+<div class="scard-ref">参考：宋代奏折（黄麻纸松烟墨+朱批界栏）</div>
+<div class="scard-sig">签名：界栏朱线+泥金批注</div>
+<div class="cmdrow"><code>git checkout style/songce</code><button class="copybtn" data-cmd="git checkout style/songce">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/songce-home.jpg" alt="宋册朱批 首页" loading="lazy"><img src="gallery/songce-chat.jpg" alt="宋册朱批 西米聊天" loading="lazy"><img src="gallery/songce-content.jpg" alt="宋册朱批 每日成长" loading="lazy"><img src="gallery/songce-grow.jpg" alt="宋册朱批 我的变化" loading="lazy"><img src="gallery/songce-me.jpg" alt="宋册朱批 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="深夜温柔">
+<div class="scard-top"><img class="cover" src="gallery/baroque-home.jpg" alt="巴洛克 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">巴洛克</div>
+<div class="scard-branch">style/baroque <span class="tip">· ae14b7d</span></div>
+<div class="scard-mood">「情绪是画布上的油画——浓郁不是负担是丰盛」</div>
+<div class="scard-ref">参考：巴洛克绘画（深檀鎏金绛红绒）</div>
+<div class="scard-sig">签名：鎏金画框+绒面渐晕</div>
+<div class="cmdrow"><code>git checkout style/baroque</code><button class="copybtn" data-cmd="git checkout style/baroque">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/baroque-home.jpg" alt="巴洛克 首页" loading="lazy"><img src="gallery/baroque-chat.jpg" alt="巴洛克 西米聊天" loading="lazy"><img src="gallery/baroque-content.jpg" alt="巴洛克 每日成长" loading="lazy"><img src="gallery/baroque-grow.jpg" alt="巴洛克 我的变化" loading="lazy"><img src="gallery/baroque-me.jpg" alt="巴洛克 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="有性格">
+<div class="scard-top"><img class="cover" src="gallery/construct-home.jpg" alt="构成主义 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">构成主义</div>
+<div class="scard-branch">style/construct <span class="tip">· 09f30b2</span></div>
+<div class="scard-mood">「情绪用最少的颜色最锐利的角度表达」</div>
+<div class="scard-ref">参考：El Lissitzky（红黑米斜切几何）</div>
+<div class="scard-sig">签名：右上红三角+黑粗框</div>
+<div class="cmdrow"><code>git checkout style/construct</code><button class="copybtn" data-cmd="git checkout style/construct">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/construct-home.jpg" alt="构成主义 首页" loading="lazy"><img src="gallery/construct-chat.jpg" alt="构成主义 西米聊天" loading="lazy"><img src="gallery/construct-content.jpg" alt="构成主义 每日成长" loading="lazy"><img src="gallery/construct-grow.jpg" alt="构成主义 我的变化" loading="lazy"><img src="gallery/construct-me.jpg" alt="构成主义 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="深夜温柔">
+<div class="scard-top"><img class="cover" src="gallery/rococo-home.jpg" alt="洛可可 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">洛可可</div>
+<div class="scard-branch">style/rococo <span class="tip">· 89d83ee</span></div>
+<div class="scard-mood">「温柔不需要沉重——粉绸裹着的一句「我在」也是认真的」</div>
+<div class="scard-ref">参考：Rococo（粉绸珊瑚紫金曲线）</div>
+<div class="scard-sig">签名：圆形印+珊瑚描边</div>
+<div class="cmdrow"><code>git checkout style/rococo</code><button class="copybtn" data-cmd="git checkout style/rococo">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/rococo-home.jpg" alt="洛可可 首页" loading="lazy"><img src="gallery/rococo-chat.jpg" alt="洛可可 西米聊天" loading="lazy"><img src="gallery/rococo-content.jpg" alt="洛可可 每日成长" loading="lazy"><img src="gallery/rococo-grow.jpg" alt="洛可可 我的变化" loading="lazy"><img src="gallery/rococo-me.jpg" alt="洛可可 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="深夜温柔">
+<div class="scard-top"><img class="cover" src="gallery/empire-home.jpg" alt="帝政式 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">帝政式</div>
+<div class="scard-branch">style/empire <span class="tip">· 6f66089</span></div>
+<div class="scard-mood">「秩序即力量——清晰的边界是安全感最古老的形式」</div>
+<div class="scard-ref">参考：Empire style（海军蓝×帝国金×象牙）</div>
+<div class="scard-sig">签名：双金线嵌套框</div>
+<div class="cmdrow"><code>git checkout style/empire</code><button class="copybtn" data-cmd="git checkout style/empire">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/empire-home.jpg" alt="帝政式 首页" loading="lazy"><img src="gallery/empire-chat.jpg" alt="帝政式 西米聊天" loading="lazy"><img src="gallery/empire-content.jpg" alt="帝政式 每日成长" loading="lazy"><img src="gallery/empire-grow.jpg" alt="帝政式 我的变化" loading="lazy"><img src="gallery/empire-me.jpg" alt="帝政式 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="现代克制">
+<div class="scard-top"><img class="cover" src="gallery/bauhaus-home.jpg" alt="包豪斯 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">包豪斯</div>
+<div class="scard-branch">style/bauhaus <span class="tip">· 746ec34</span></div>
+<div class="scard-mood">「情绪拆成清晰的原色——每个感受都有明确的形状」</div>
+<div class="scard-ref">参考：Bauhaus 1919（三原色红黄蓝几何）</div>
+<div class="scard-sig">签名：卡片三原色角块+零圆角</div>
+<div class="cmdrow"><code>git checkout style/bauhaus</code><button class="copybtn" data-cmd="git checkout style/bauhaus">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/bauhaus-home.jpg" alt="包豪斯 首页" loading="lazy"><img src="gallery/bauhaus-chat.jpg" alt="包豪斯 西米聊天" loading="lazy"><img src="gallery/bauhaus-content.jpg" alt="包豪斯 每日成长" loading="lazy"><img src="gallery/bauhaus-grow.jpg" alt="包豪斯 我的变化" loading="lazy"><img src="gallery/bauhaus-me.jpg" alt="包豪斯 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="深夜温柔">
+<div class="scard-top"><img class="cover" src="gallery/gothic-home.jpg" alt="哥特烛光 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">哥特烛光</div>
+<div class="scard-branch">style/gothic <span class="tip">· 7243499</span></div>
+<div class="scard-mood">「深夜教堂里的一支蜡烛——黑暗存在，但光由你持着」</div>
+<div class="scard-ref">参考：哥特教堂烛光（暖烛光宝石调近黑）</div>
+<div class="scard-sig">签名：尖拱对角卡角+烛光渐晕</div>
+<div class="cmdrow"><code>git checkout style/gothic</code><button class="copybtn" data-cmd="git checkout style/gothic">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/gothic-home.jpg" alt="哥特烛光 首页" loading="lazy"><img src="gallery/gothic-chat.jpg" alt="哥特烛光 西米聊天" loading="lazy"><img src="gallery/gothic-content.jpg" alt="哥特烛光 每日成长" loading="lazy"><img src="gallery/gothic-grow.jpg" alt="哥特烛光 我的变化" loading="lazy"><img src="gallery/gothic-me.jpg" alt="哥特烛光 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="现代克制">
+<div class="scard-top"><img class="cover" src="gallery/brutalist-home.jpg" alt="粗野主义 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">粗野主义</div>
+<div class="scard-branch">style/brutalist <span class="tip">· c4e4455</span></div>
+<div class="scard-mood">「不装饰的诚实——材料本来的样子就够了」</div>
+<div class="scard-ref">参考：Brutalism（清水混凝土+锈红点缀）</div>
+<div class="scard-sig">签名：混凝土灰+零装饰+锈红强调</div>
+<div class="cmdrow"><code>git checkout style/brutalist</code><button class="copybtn" data-cmd="git checkout style/brutalist">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/brutalist-home.jpg" alt="粗野主义 首页" loading="lazy"><img src="gallery/brutalist-chat.jpg" alt="粗野主义 西米聊天" loading="lazy"><img src="gallery/brutalist-content.jpg" alt="粗野主义 每日成长" loading="lazy"><img src="gallery/brutalist-grow.jpg" alt="粗野主义 我的变化" loading="lazy"><img src="gallery/brutalist-me.jpg" alt="粗野主义 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="现代克制">
+<div class="scard-top"><img class="cover" src="gallery/japandi-home.jpg" alt="Japandi 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">Japandi</div>
+<div class="scard-branch">style/japandi <span class="tip">· 12fcf44</span></div>
+<div class="scard-mood">「少但够用——每件留下的东西都被认真选过」</div>
+<div class="scard-ref">参考：日式侘寂×北欧功能（亚麻暖白+橄榄棕）</div>
+<div class="scard-sig">签名：微圆角+超轻投影+木质感</div>
+<div class="cmdrow"><code>git checkout style/japandi</code><button class="copybtn" data-cmd="git checkout style/japandi">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/japandi-home.jpg" alt="Japandi 首页" loading="lazy"><img src="gallery/japandi-chat.jpg" alt="Japandi 西米聊天" loading="lazy"><img src="gallery/japandi-content.jpg" alt="Japandi 每日成长" loading="lazy"><img src="gallery/japandi-grow.jpg" alt="Japandi 我的变化" loading="lazy"><img src="gallery/japandi-me.jpg" alt="Japandi 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="现代克制">
+<div class="scard-top"><img class="cover" src="gallery/datesys-home.jpg" alt="日系杂志 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">日系杂志</div>
+<div class="scard-branch">style/datesys <span class="tip">· 31e1c94</span></div>
+<div class="scard-mood">「留白不是空，是给情绪腾出位置」</div>
+<div class="scard-ref">参考：日系杂志排版（纸白碳墨林绿+细线）</div>
+<div class="scard-sig">签名：卡片顶部细线+零圆角+不对称网格</div>
+<div class="cmdrow"><code>git checkout style/datesys</code><button class="copybtn" data-cmd="git checkout style/datesys">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/datesys-home.jpg" alt="日系杂志 首页" loading="lazy"><img src="gallery/datesys-chat.jpg" alt="日系杂志 西米聊天" loading="lazy"><img src="gallery/datesys-content.jpg" alt="日系杂志 每日成长" loading="lazy"><img src="gallery/datesys-grow.jpg" alt="日系杂志 我的变化" loading="lazy"><img src="gallery/datesys-me.jpg" alt="日系杂志 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="现代克制">
+<div class="scard-top"><img class="cover" src="gallery/kinfolk-home.jpg" alt="Kinfolk 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">Kinfolk</div>
+<div class="scard-branch">style/kinfolk <span class="tip">· 48d562a</span></div>
+<div class="scard-mood">「少但够用——每件留下的东西都被认真选过」</div>
+<div class="scard-ref">参考：Kinfolk 杂志（奶油纸+咖啡墨+陶土）</div>
+<div class="scard-sig">签名：奶油渐变卡+轻投影+暖化滤镜</div>
+<div class="cmdrow"><code>git checkout style/kinfolk</code><button class="copybtn" data-cmd="git checkout style/kinfolk">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/kinfolk-home.jpg" alt="Kinfolk 首页" loading="lazy"><img src="gallery/kinfolk-chat.jpg" alt="Kinfolk 西米聊天" loading="lazy"><img src="gallery/kinfolk-content.jpg" alt="Kinfolk 每日成长" loading="lazy"><img src="gallery/kinfolk-grow.jpg" alt="Kinfolk 我的变化" loading="lazy"><img src="gallery/kinfolk-me.jpg" alt="Kinfolk 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="东方安静">
+<div class="scard-top"><img class="cover" src="gallery/jinshi-home.jpg" alt="金石拓片 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">金石拓片</div>
+<div class="scard-branch">style/jinshi <span class="tip">· 21ec98a</span></div>
+<div class="scard-mood">「刻在石头上的字经得起千年——心事也值得郑重对待」</div>
+<div class="scard-ref">参考：金石碑帖拓片（拓纸+拓墨+石青）</div>
+<div class="scard-sig">签名：碑帖双细框+去饱和 hero</div>
+<div class="cmdrow"><code>git checkout style/jinshi</code><button class="copybtn" data-cmd="git checkout style/jinshi">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/jinshi-home.jpg" alt="金石拓片 首页" loading="lazy"><img src="gallery/jinshi-chat.jpg" alt="金石拓片 西米聊天" loading="lazy"><img src="gallery/jinshi-content.jpg" alt="金石拓片 每日成长" loading="lazy"><img src="gallery/jinshi-grow.jpg" alt="金石拓片 我的变化" loading="lazy"><img src="gallery/jinshi-me.jpg" alt="金石拓片 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="有性格">
+<div class="scard-top"><img class="cover" src="gallery/matisse-home.jpg" alt="马蒂斯剪纸 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">马蒂斯剪纸</div>
+<div class="scard-branch">style/matisse <span class="tip">· f71962d</span></div>
+<div class="scard-mood">「情绪可以是明亮的形状——剪下来贴在墙上就是作品」</div>
+<div class="scard-ref">参考：Matisse 晚年剪纸（画廊白+钴蓝+朱红柠檬色块）</div>
+<div class="scard-sig">签名：卡角剪纸色斑+hero 增饱和</div>
+<div class="cmdrow"><code>git checkout style/matisse</code><button class="copybtn" data-cmd="git checkout style/matisse">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/matisse-home.jpg" alt="马蒂斯剪纸 首页" loading="lazy"><img src="gallery/matisse-chat.jpg" alt="马蒂斯剪纸 西米聊天" loading="lazy"><img src="gallery/matisse-content.jpg" alt="马蒂斯剪纸 每日成长" loading="lazy"><img src="gallery/matisse-grow.jpg" alt="马蒂斯剪纸 我的变化" loading="lazy"><img src="gallery/matisse-me.jpg" alt="马蒂斯剪纸 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="有性格">
+<div class="scard-top"><img class="cover" src="gallery/vaporwave-home.jpg" alt="蒸汽波 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">蒸汽波</div>
+<div class="scard-branch">style/vaporwave <span class="tip">· 575b78b</span></div>
+<div class="scard-mood">「旧屏幕的柔光里，难过也可以有霓虹色」</div>
+<div class="scard-ref">参考：90s Vaporwave（淡紫屏+霓虹粉+网格）</div>
+<div class="scard-sig">签名：细网格底纹+粉青渐变条</div>
+<div class="cmdrow"><code>git checkout style/vaporwave</code><button class="copybtn" data-cmd="git checkout style/vaporwave">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/vaporwave-home.jpg" alt="蒸汽波 首页" loading="lazy"><img src="gallery/vaporwave-chat.jpg" alt="蒸汽波 西米聊天" loading="lazy"><img src="gallery/vaporwave-content.jpg" alt="蒸汽波 每日成长" loading="lazy"><img src="gallery/vaporwave-grow.jpg" alt="蒸汽波 我的变化" loading="lazy"><img src="gallery/vaporwave-me.jpg" alt="蒸汽波 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="东方安静">
+<div class="scard-top"><img class="cover" src="gallery/suxiu-home.jpg" alt="苏绣 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">苏绣</div>
+<div class="scard-branch">style/suxiu <span class="tip">· 0d82ebd</span></div>
+<div class="scard-mood">「一根丝劈成十六份——心事被细细密密地善待过」</div>
+<div class="scard-ref">参考：苏绣双面绣（丝绢白+缠丝紫+捻金线）</div>
+<div class="scard-sig">签名：细紫线框+绢色内衬</div>
+<div class="cmdrow"><code>git checkout style/suxiu</code><button class="copybtn" data-cmd="git checkout style/suxiu">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/suxiu-home.jpg" alt="苏绣 首页" loading="lazy"><img src="gallery/suxiu-chat.jpg" alt="苏绣 西米聊天" loading="lazy"><img src="gallery/suxiu-content.jpg" alt="苏绣 每日成长" loading="lazy"><img src="gallery/suxiu-grow.jpg" alt="苏绣 我的变化" loading="lazy"><img src="gallery/suxiu-me.jpg" alt="苏绣 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="现代克制">
+<div class="scard-top"><img class="cover" src="gallery/mondrian-home.jpg" alt="蒙德里安 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">蒙德里安</div>
+<div class="scard-branch">style/mondrian <span class="tip">· 5b0c739</span></div>
+<div class="scard-mood">「乱情绪也可以被格线接住——每一块都有清楚的位置」</div>
+<div class="scard-ref">参考：新造型主义（白底黑粗格+红黄蓝色块）</div>
+<div class="scard-sig">签名：4px 黑框零圆角+斜切黄块</div>
+<div class="cmdrow"><code>git checkout style/mondrian</code><button class="copybtn" data-cmd="git checkout style/mondrian">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/mondrian-home.jpg" alt="蒙德里安 首页" loading="lazy"><img src="gallery/mondrian-chat.jpg" alt="蒙德里安 西米聊天" loading="lazy"><img src="gallery/mondrian-content.jpg" alt="蒙德里安 每日成长" loading="lazy"><img src="gallery/mondrian-grow.jpg" alt="蒙德里安 我的变化" loading="lazy"><img src="gallery/mondrian-me.jpg" alt="蒙德里安 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="有性格">
+<div class="scard-top"><img class="cover" src="gallery/techo-home.jpg" alt="手账 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">手账</div>
+<div class="scard-branch">style/techo <span class="tip">· 247d706</span></div>
+<div class="scard-mood">「今天这一格写坏了也没关系——明天还有一整页」</div>
+<div class="scard-ref">参考：日本 techo（格纹纸+圆珠笔蓝黑+和纸胶带）</div>
+<div class="scard-sig">签名：全页淡格纹+卡顶胶带斜贴</div>
+<div class="cmdrow"><code>git checkout style/techo</code><button class="copybtn" data-cmd="git checkout style/techo">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/techo-home.jpg" alt="手账 首页" loading="lazy"><img src="gallery/techo-chat.jpg" alt="手账 西米聊天" loading="lazy"><img src="gallery/techo-content.jpg" alt="手账 每日成长" loading="lazy"><img src="gallery/techo-grow.jpg" alt="手账 我的变化" loading="lazy"><img src="gallery/techo-me.jpg" alt="手账 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="深夜温柔">
+<div class="scard-top"><img class="cover" src="gallery/klimt-home.jpg" alt="克里姆特金箔 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">克里姆特金箔</div>
+<div class="scard-branch">style/klimt <span class="tip">· ff0dba2</span></div>
+<div class="scard-mood">「黑暗里最有光的地方是金线——心事镶进金箔里也郑重」</div>
+<div class="scard-ref">参考：Klimt 黄金时期（黑金底+金箔双线框）</div>
+<div class="scard-sig">签名：黑金双线内衬框+全站暗底</div>
+<div class="cmdrow"><code>git checkout style/klimt</code><button class="copybtn" data-cmd="git checkout style/klimt">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/klimt-home.jpg" alt="克里姆特金箔 首页" loading="lazy"><img src="gallery/klimt-chat.jpg" alt="克里姆特金箔 西米聊天" loading="lazy"><img src="gallery/klimt-content.jpg" alt="克里姆特金箔 每日成长" loading="lazy"><img src="gallery/klimt-grow.jpg" alt="克里姆特金箔 我的变化" loading="lazy"><img src="gallery/klimt-me.jpg" alt="克里姆特金箔 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="东方安静">
+<div class="scard-top"><img class="cover" src="gallery/splashink-home.jpg" alt="泼墨 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">泼墨</div>
+<div class="scard-branch">style/splashink <span class="tip">· 09897ab</span></div>
+<div class="scard-mood">「墨是情绪——泼出去，浓淡由它，落纸即安」</div>
+<div class="scard-ref">参考：张大千泼墨泼彩（宣纸白+墨晕+青绿点缀）</div>
+<div class="scard-sig">签名：卡角墨晕渐晕+直角+hero 去饱和</div>
+<div class="cmdrow"><code>git checkout style/splashink</code><button class="copybtn" data-cmd="git checkout style/splashink">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/splashink-home.jpg" alt="泼墨 首页" loading="lazy"><img src="gallery/splashink-chat.jpg" alt="泼墨 西米聊天" loading="lazy"><img src="gallery/splashink-content.jpg" alt="泼墨 每日成长" loading="lazy"><img src="gallery/splashink-grow.jpg" alt="泼墨 我的变化" loading="lazy"><img src="gallery/splashink-me.jpg" alt="泼墨 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article><article class="scard" data-fam="有性格">
+<div class="scard-top"><img class="cover" src="gallery/manuscript-home.jpg" alt="泥金手抄本 首页" loading="lazy"></div>
+<div class="scard-body">
+<div class="scard-name">泥金手抄本</div>
+<div class="scard-branch">style/manuscript <span class="tip">· 3d52102</span></div>
+<div class="scard-mood">「每一个字都被抄写员郑重誊过——心事值得这样的仪式感」</div>
+<div class="scard-ref">参考：中世纪泥金手抄本（羊皮纸+泥金嵌线+深红）</div>
+<div class="scard-sig">签名：泥金双嵌线+刊头深红</div>
+<div class="cmdrow"><code>git checkout style/manuscript</code><button class="copybtn" data-cmd="git checkout style/manuscript">复制</button></div>
+<div class="expander"><div class="pages"><img src="gallery/manuscript-home.jpg" alt="泥金手抄本 首页" loading="lazy"><img src="gallery/manuscript-chat.jpg" alt="泥金手抄本 西米聊天" loading="lazy"><img src="gallery/manuscript-content.jpg" alt="泥金手抄本 每日成长" loading="lazy"><img src="gallery/manuscript-grow.jpg" alt="泥金手抄本 我的变化" loading="lazy"><img src="gallery/manuscript-me.jpg" alt="泥金手抄本 我的" loading="lazy"></div><div class="cap">首页 · 西米聊天 · 每日成长 · 我的变化 · 我的</div></div>
+</div></article></div>
+
+<footer><span>西米 · 心智愈情感陪伴小程序 —— 演示总览</span><span>截图为运行时 probe 实拍 · 44 支全过门禁与对比度五对 · main 终验 16/16</span></footer>
+</div>
+<script>const PAGES=[["home","首页"],["chat","西米聊天"],["content","每日成长"],["grow","我的变化"],["me","我的"]];
+const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
+$$('.pill').forEach(p=>p.addEventListener('click',()=>{const f=p.dataset.f;
+ $$('.pill').forEach(x=>x.classList.toggle('on',x===p));
+ $$('.scard').forEach(c=>c.style.display=(f==='全部'||c.dataset.fam===f)?'':'none');}));
+$$('.scard').forEach(c=>c.addEventListener('click',e=>{if(e.target.closest('.copybtn'))return;
+ const was=c.classList.contains('open');$$('.scard').forEach(x=>x.classList.remove('open'));if(!was)c.classList.add('open');}));
+$$('.copybtn').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();navigator.clipboard&&navigator.clipboard.writeText(b.dataset.cmd);b.textContent='已复制';setTimeout(()=>b.textContent='复制',900);}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$$('.scard').forEach(x=>x.classList.remove('open'));});</script>
+</body></html>

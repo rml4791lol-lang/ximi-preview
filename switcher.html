@@ -1,0 +1,55 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>西米 · 风格切换器（44 支）</title>
+<style>
+:root{--bg:#17181d;--panel:#22242b;--line:#3a3d46;--fg:#e8e8ea;--mut:#9a9da6;--acc:#8ab4f8;--gold:#d8c89a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:PingFang SC,-apple-system,sans-serif;display:flex;height:100vh}
+aside{width:280px;min-width:220px;border-right:1px solid var(--line);display:flex;flex-direction:column}
+aside h1{font-size:15px;margin:14px 16px 8px}
+.fams{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 10px;border-bottom:1px solid var(--line)}
+.fams button{background:var(--panel);border:1px solid var(--line);color:var(--mut);border-radius:999px;padding:4px 10px;font-size:12px;cursor:pointer}
+.fams button.on{background:var(--acc);border-color:var(--acc);color:#10131a}
+#list{overflow-y:auto;flex:1;padding:8px}
+#list button{display:block;width:100%;text-align:left;background:none;border:0;border-left:3px solid transparent;color:var(--fg);padding:8px 10px;font-size:13px;cursor:pointer;border-radius:0 8px 8px 0}
+#list button .en{color:var(--mut);font-size:11px;margin-left:6px}
+#list button.on{background:var(--panel);border-left-color:var(--acc)}
+main{flex:1;display:flex;flex-direction:column;min-width:0}
+.meta{padding:16px 20px 10px}
+.meta h2{margin:0;font-size:20px}
+.meta .ref{color:var(--mut);font-size:13px;margin-top:2px}
+.meta .mood{color:var(--gold);font-size:13px;margin-top:6px}
+.meta .sig{color:var(--mut);font-size:12px;margin-top:2px}
+.cmd{margin:8px 20px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font:12px/1.6 monospace;color:var(--acc);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.cmd button{background:none;border:1px solid var(--line);color:var(--fg);border-radius:6px;padding:3px 10px;font-size:12px;cursor:pointer}
+.pages{flex:1;display:grid;grid-template-columns:repeat(5,1fr);gap:10px;padding:10px 20px 20px;min-height:0}
+.pages figure{margin:0;display:flex;flex-direction:column;min-height:0}
+.pages img{width:100%;height:100%;object-fit:cover;object-position:top;border-radius:8px;border:1px solid var(--line)}
+.pages figcaption{text-align:center;color:var(--mut);font-size:11px;margin-top:5px}
+.hint{color:var(--mut);font-size:11px;padding:0 20px 10px}
+@media(max-width:900px){body{flex-direction:column;height:auto}aside{width:100%;border-right:0;border-bottom:1px solid var(--line)}#list{max-height:180px}.pages{grid-template-columns:repeat(2,1fr)}}
+</style></head><body>
+<aside><h1>🎨 风格切换器 <span style="color:var(--mut);font-size:12px">44 支</span></h1>
+<div class="fams" id="fams"></div><div id="list"></div></aside>
+<main><div class="meta"><h2 id="m-name"></h2><div class="ref" id="m-ref"></div><div class="mood" id="m-mood"></div><div class="sig" id="m-sig"></div></div>
+<div class="cmd"><code id="m-cmd"></code><button id="copy">复制</button></div>
+<div class="pages" id="pages"></div>
+<div class="hint">← → 键切换风格 · 看中后到 frontend 目录执行命令即可实时预览；也可说「A 的色 + B 的签名」做杂交版</div></main>
+<script>const STYLES=[{"k": "qinglv", "name": "青绿山水", "ref": "《千里江山图》石青石绿+泥金", "mood": "把情绪放进足够大的山河里，问题会显得小", "sig": "泥金勾边印+hero 绢色滤镜", "fam": "东方安静"}, {"k": "indigo", "name": "蓝染", "ref": "蓝染布/浮世绘对色（靛蓝×朱印）", "mood": "深水的安静——夜里的情绪是靛蓝的", "sig": "朱印（浮世绘经典对色）", "fam": "深夜温柔"}, {"k": "deco", "name": "装饰艺术", "ref": "1920s Art Deco（墨绿×香槟金）", "mood": "把「整理心情」做成仪式——秩序即安抚", "sig": "卡片双线金框", "fam": "有性格"}, {"k": "riso", "name": "孔雀印刷", "ref": "Riso 双色印刷（荧光粉×印刷蓝）", "mood": "直白、年轻、「说出来不丢人」", "sig": "hero 网点点阵", "fam": "有性格"}, {"k": "monet", "name": "柔光印象", "ref": "莫奈《睡莲》（灰紫+湖绿光斑）", "mood": "被柔光包住——情绪是水面光斑，会散不会淹", "sig": "全页三层光斑氛围层", "fam": "深夜温柔"}, {"k": "swiss", "name": "瑞士网格", "ref": "International Typographic Style", "mood": "冷静清晰不煽情——「说清楚」即安抚", "sig": "全站去圆角+hero 黑白化+信号红", "fam": "现代克制"}, {"k": "wabi", "name": "侘寂", "ref": "土墙粗纸锈印、不对称", "mood": "不完美也可以被看见——毛边不需要修剪", "sig": "粗纸肌理+不对称对角卡角", "fam": "有性格"}, {"k": "taisho", "name": "大正浪漫", "ref": "和洋折衷（绢玫瑰×胭脂×苍绿印）", "mood": "旧时代的新女性——温柔里带主见", "sig": "双色缎带卡", "fam": "深夜温柔"}, {"k": "botanical", "name": "博物学手绘", "ref": "19 世纪标本册（橄榄叶绿+树皮印）", "mood": "把情绪当标本观察——观察即消化", "sig": "学名斜体标注+标本框", "fam": "有性格"}, {"k": "songjin", "name": "宋锦", "ref": "宋锦织物（紫墨金线织锦）", "mood": "情绪织进锦缎——乱的是织法不是线", "sig": "三色织锦嵌线", "fam": "东方安静"}, {"k": "morandi", "name": "莫兰迪灰调", "ref": "Giorgio Morandi 静物（一切颜色退半步）", "mood": "情绪不必浓烈——淡淡的也值得被认真对待", "sig": "全站去高光+hero 去饱和", "fam": "现代克制"}, {"k": "tangcai", "name": "唐三彩", "ref": "唐三彩釉色（琥珀×彩绿×酱釉流釉）", "mood": "情绪像釉色一样会流——高温里交融成新颜色", "sig": "雾光卡三彩流釉渐变", "fam": "东方安静"}, {"k": "hokusai", "name": "浮世绘浪", "ref": "葛饰北斋《神奈川冲浪里》（普鲁士蓝×白浪×朱印）", "mood": "情绪是浪——会起会落，浪底下的深蓝一直在", "sig": "卡底卷浪线+朱印落款", "fam": "有性格"}, {"k": "persian", "name": "波斯细密画", "ref": "波斯手抄本（宝蓝×金箔×赭陶）", "mood": "情绪是手抄本里的插画——被精心装帧的心事", "sig": "三色宝蓝金框", "fam": "有性格"}, {"k": "memphis", "name": "孟菲斯", "ref": "1980s Memphis Design（撞色几何+硬阴影）", "mood": "情绪可以好玩——明亮的也可以是真话", "sig": "卡片硬阴影轮换（黄/紫/橘）", "fam": "有性格"}, {"k": "muke", "name": "黑白木刻", "ref": "黑白木刻版画（纯黑白粗刻线）", "mood": "情绪刻在木头上——一刀是一刀", "sig": "三线黑刻框+反白标题", "fam": "有性格"}, {"k": "terrazzo", "name": "水磨石", "ref": "Venetian Terrazzo（多彩碎石屑）", "mood": "情绪是水磨石里的石屑——磨在一起才完整", "sig": "全页碎石点缀层", "fam": "现代克制"}, {"k": "xinzhongshi", "name": "新中式", "ref": "新中式室内（现代骨架+紫檀黄铜）", "mood": "传统给骨架，现代给呼吸", "sig": "黄铜细线+紫檀左签", "fam": "东方安静"}, {"k": "mucha", "name": "慕夏新艺术", "ref": "Alfons Mucha（石膏绿+玫瑰金棕）", "mood": "被花环围住——装饰是关怀的形状", "sig": "拱形对角圆角曲线框", "fam": "深夜温柔"}, {"k": "ulm", "name": "乌尔姆学院", "ref": "Ulm School（系统灰白+系统黄）", "mood": "理性本身是温柔的——一切有条理", "sig": "卡片族黑左轨+黄轨点缀", "fam": "现代克制"}, {"k": "dunhuang", "name": "敦煌壁画", "ref": "莫高窟壁画（土红石青金箔）", "mood": "千年洞窟里颜料仍在——被时间验证过的颜色", "sig": "三色嵌线框+藻井扇纹", "fam": "东方安静"}, {"k": "midnight", "name": "夜航", "ref": "深夜树洞（近黑蓝夜空+月光金+星子）", "mood": "凌晨三点的屏幕不该用白光刺人", "sig": "星子点缀+夜幕 veil", "fam": "深夜温柔"}, {"k": "qinghua", "name": "青花瓷", "ref": "青花瓷（瓷白钴蓝缠枝纹）", "mood": "心事画在瓷上——经窑火也不褪色", "sig": "缠枝竖纹+三层青花嵌线", "fam": "东方安静"}, {"k": "ruyao", "name": "汝窑天青", "ref": "宋瓷单色釉（天青一色族+冰裂纹）", "mood": "安静的极致是所有内容属于同一个调子", "sig": "冰裂纹开片", "fam": "东方安静"}, {"k": "songce", "name": "宋册朱批", "ref": "宋代奏折（黄麻纸松烟墨+朱批界栏）", "mood": "你是唯一有资格在自己心上批注的人", "sig": "界栏朱线+泥金批注", "fam": "东方安静"}, {"k": "baroque", "name": "巴洛克", "ref": "巴洛克绘画（深檀鎏金绛红绒）", "mood": "情绪是画布上的油画——浓郁不是负担是丰盛", "sig": "鎏金画框+绒面渐晕", "fam": "深夜温柔"}, {"k": "construct", "name": "构成主义", "ref": "El Lissitzky（红黑米斜切几何）", "mood": "情绪用最少的颜色最锐利的角度表达", "sig": "右上红三角+黑粗框", "fam": "有性格"}, {"k": "rococo", "name": "洛可可", "ref": "Rococo（粉绸珊瑚紫金曲线）", "mood": "温柔不需要沉重——粉绸裹着的一句「我在」也是认真的", "sig": "圆形印+珊瑚描边", "fam": "深夜温柔"}, {"k": "empire", "name": "帝政式", "ref": "Empire style（海军蓝×帝国金×象牙）", "mood": "秩序即力量——清晰的边界是安全感最古老的形式", "sig": "双金线嵌套框", "fam": "深夜温柔"}, {"k": "bauhaus", "name": "包豪斯", "ref": "Bauhaus 1919（三原色红黄蓝几何）", "mood": "情绪拆成清晰的原色——每个感受都有明确的形状", "sig": "卡片三原色角块+零圆角", "fam": "现代克制"}, {"k": "gothic", "name": "哥特烛光", "ref": "哥特教堂烛光（暖烛光宝石调近黑）", "mood": "深夜教堂里的一支蜡烛——黑暗存在，但光由你持着", "sig": "尖拱对角卡角+烛光渐晕", "fam": "深夜温柔"}, {"k": "brutalist", "name": "粗野主义", "ref": "Brutalism（清水混凝土+锈红点缀）", "mood": "不装饰的诚实——材料本来的样子就够了", "sig": "混凝土灰+零装饰+锈红强调", "fam": "现代克制"}, {"k": "japandi", "name": "Japandi", "ref": "日式侘寂×北欧功能（亚麻暖白+橄榄棕）", "mood": "少但够用——每件留下的东西都被认真选过", "sig": "微圆角+超轻投影+木质感", "fam": "现代克制"}, {"k": "datesys", "name": "日系杂志", "ref": "日系杂志排版（纸白碳墨林绿+细线）", "mood": "留白不是空，是给情绪腾出位置", "sig": "卡片顶部细线+零圆角+不对称网格", "fam": "现代克制"}, {"k": "kinfolk", "name": "Kinfolk", "ref": "Kinfolk 杂志（奶油纸+咖啡墨+陶土）", "mood": "少但够用——每件留下的东西都被认真选过", "sig": "奶油渐变卡+轻投影+暖化滤镜", "fam": "现代克制"}, {"k": "jinshi", "name": "金石拓片", "ref": "金石碑帖拓片（拓纸+拓墨+石青）", "mood": "刻在石头上的字经得起千年——心事也值得郑重对待", "sig": "碑帖双细框+去饱和 hero", "fam": "东方安静"}, {"k": "matisse", "name": "马蒂斯剪纸", "ref": "Matisse 晚年剪纸（画廊白+钴蓝+朱红柠檬色块）", "mood": "情绪可以是明亮的形状——剪下来贴在墙上就是作品", "sig": "卡角剪纸色斑+hero 增饱和", "fam": "有性格"}, {"k": "vaporwave", "name": "蒸汽波", "ref": "90s Vaporwave（淡紫屏+霓虹粉+网格）", "mood": "旧屏幕的柔光里，难过也可以有霓虹色", "sig": "细网格底纹+粉青渐变条", "fam": "有性格"}, {"k": "suxiu", "name": "苏绣", "ref": "苏绣双面绣（丝绢白+缠丝紫+捻金线）", "mood": "一根丝劈成十六份——心事被细细密密地善待过", "sig": "细紫线框+绢色内衬", "fam": "东方安静"}, {"k": "mondrian", "name": "蒙德里安", "ref": "新造型主义（白底黑粗格+红黄蓝色块）", "mood": "乱情绪也可以被格线接住——每一块都有清楚的位置", "sig": "4px 黑框零圆角+斜切黄块", "fam": "现代克制"}, {"k": "techo", "name": "手账", "ref": "日本 techo（格纹纸+圆珠笔蓝黑+和纸胶带）", "mood": "今天这一格写坏了也没关系——明天还有一整页", "sig": "全页淡格纹+卡顶胶带斜贴", "fam": "有性格"}, {"k": "klimt", "name": "克里姆特金箔", "ref": "Klimt 黄金时期（黑金底+金箔双线框）", "mood": "黑暗里最有光的地方是金线——心事镶进金箔里也郑重", "sig": "黑金双线内衬框+全站暗底", "fam": "深夜温柔"}, {"k": "splashink", "name": "泼墨", "ref": "张大千泼墨泼彩（宣纸白+墨晕+青绿点缀）", "mood": "墨是情绪——泼出去，浓淡由它，落纸即安", "sig": "卡角墨晕渐晕+直角+hero 去饱和", "fam": "东方安静"}, {"k": "manuscript", "name": "泥金手抄本", "ref": "中世纪泥金手抄本（羊皮纸+泥金嵌线+深红）", "mood": "每一个字都被抄写员郑重誊过——心事值得这样的仪式感", "sig": "泥金双嵌线+刊头深红", "fam": "有性格"}];
+const PAGES=[["home","首页"],["chat","西米聊天"],["content","每日成长"],["grow","我的变化"],["me","我的"]];
+const FAMS=["全部", "东方安静", "现代克制", "深夜温柔", "有性格"];
+let fam="全部",idx=0,shown=STYLES;
+const $=id=>document.getElementById(id);
+function renderFams(){$("fams").innerHTML=FAMS.map(f=>`<button class="${f===fam?'on':''}" data-f="${f}">${f}</button>`).join('')}
+function renderList(){$("list").innerHTML=shown.map((s,i)=>`<button class="${i===idx?'on':''}" data-i="${i}">${s.name}<span class="en">style/${s.k}</span></button>`).join('')}
+function renderMain(){const s=shown[idx];if(!s)return;
+ $("m-name").textContent=s.name+" · "+s.fam;$("m-ref").textContent="参考："+s.ref;
+ $("m-mood").textContent="「"+s.mood+"」";$("m-sig").textContent="签名："+s.sig;
+ $("m-cmd").textContent="git checkout style/"+s.k;
+ $("pages").innerHTML=PAGES.map(([p,l])=>`<figure><img src="gallery/${s.k}-${p}.jpg" alt="${s.name} ${l}" loading="lazy"><figcaption>${l}</figcaption></figure>`).join('')}
+function apply(){shown=fam==="全部"?STYLES:STYLES.filter(s=>s.fam===fam);idx=Math.min(idx,Math.max(0,shown.length-1));renderFams();renderList();renderMain()}
+$("fams").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;fam=b.dataset.f;idx=0;apply()});
+$("list").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;idx=+b.dataset.i;renderList();renderMain()});
+$("copy").addEventListener("click",()=>{navigator.clipboard&&navigator.clipboard.writeText($("m-cmd").textContent);const b=$("copy");b.textContent="已复制";setTimeout(()=>b.textContent="复制",900)});
+document.addEventListener("keydown",e=>{if(e.key==="ArrowRight"){idx=(idx+1)%shown.length;renderList();renderMain()}if(e.key==="ArrowLeft"){idx=(idx-1+shown.length)%shown.length;renderList();renderMain()}});
+apply();
+</script></body></html>
