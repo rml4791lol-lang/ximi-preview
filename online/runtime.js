@@ -1,6 +1,14 @@
 /* w2w runtime —— 小程序运行时垫片：真实页面代码原样运行 */
 (function () {
   const META = window.W2W_META, BUNDLE = window.W2W_BUNDLE;
+  /* 绝对路径资源（/images/...）解析到本应用目录（兼容 GitHub Pages 子路径部署） */
+  const BASE = new URL('.', location.href).href;
+  const CLOUD_PH = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect width="100%" height="100%" fill="#E7DFCE"/><circle cx="50%" cy="46%" r="34" fill="#D8CBB0"/></svg>');
+  const resolveSrc = v => {
+    if (!v) return v;
+    if (/^cloud:\/\//.test(v)) return (META.cloudMap && META.cloudMap[v]) ? BASE + META.cloudMap[v] : CLOUD_PH;
+    return v && v.charAt(0) === '/' && !/^\/\//.test(v) ? BASE + v.slice(1) : v;
+  };
   const ROOT = document.getElementById('w2w-root');
   const OVER = document.getElementById('w2w-overlay-root');
   const TABB = document.getElementById('tabbar-host');
@@ -48,7 +56,7 @@
     switchTab(o) { switchTab(o.url); },
     reLaunch(o) { reLaunch(o.url); },
     makePhoneCall(o) { window.open('tel:' + (o && o.phoneNumber)); },
-    pageScrollTo(o) { const p = pagesStack()[0]; if (p) p.el.scrollTop = (o && o.scrollTop) || 0; },
+    pageScrollTo(o) { const p = pagesStack()[0]; if (p && p.__el) p.__el.scrollTop = (o && o.scrollTop) || 0; },
     vibrateShort() {}, setNavigationBarTitle() {}, stopPullDownRefresh() {},
     getSystemInfoSync: () => ({ windowWidth: 390, windowHeight: 800, SDKVersion: '3.0.0', platform: 'devtools' }),
     createSelectorQuery() {
@@ -62,7 +70,33 @@
     getAppBaseInfo: () => ({ SDKVersion: '3.0.0' }),
     getMenuButtonBoundingClientRect: () => ({ top: 4, bottom: 36, left: 300, right: 380, width: 80, height: 32 }),
     getStorageInfoSync: () => ({ keys: Object.keys(store) }),
-    showModal(o) { if (o && o.success) o.success({ confirm: true }); },
+    getRealtimeLogManager: () => ({ info() {}, warn() {}, error() {}, log() {}, setFilterMsg() {}, addFilterMsg() {} }),
+    login: o => { try { o && o.success && o.success({ code: 'w2w-demo-code' }); } catch (e) {} },
+    checkSession: o => { try { o && o.success && o.success(); } catch (e) {} },
+    loadFontFace: o => { try { o && o.success && o.success({ status: 'mock' }); } catch (e) {} },
+    onWindowResize() {}, offWindowResize() {},
+    createInnerAudioContext: () => ({ play() {}, pause() {}, stop() {}, destroy() {}, seek() {}, src: '', loop: false, volume: 1, obeyMuteSwitch: true, onCanPlay() {}, onPlay() {}, onEnded() {}, onError() {}, onPause() {}, onStop() {} }),
+    createAnimation: () => { const a = {}; const chain = () => a; ['translate', 'translateX', 'translateY', 'scale', 'rotate', 'opacity', 'left', 'right', 'top', 'bottom', 'width', 'height'].forEach(k => { a[k] = chain; }); a.step = () => a; a.export = () => ({}); return a; },
+    showModal(o) {
+      const host = document.getElementById('phone');
+      const prev = document.getElementById('w2w-modal'); if (prev) prev.remove();
+      const wrap = document.createElement('div'); wrap.id = 'w2w-modal';
+      wrap.style.cssText = 'position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:120;display:flex;align-items:center;justify-content:center';
+      const box = document.createElement('div');
+      box.style.cssText = 'width:272px;background:#FFF;border-radius:14px;overflow:hidden;text-align:center;font-family:-apple-system,BlinkMacSystemFont,sans-serif';
+      box.innerHTML = '<div style="padding:24px 18px 16px"><div style="font-weight:600;font-size:16px;color:#111;letter-spacing:.5px">' + ((o && o.title) || '') + '</div><div style="font-size:13.5px;color:#666;margin-top:8px;line-height:1.55;white-space:pre-line">' + ((o && o.content) || '') + '</div></div>';
+      const btns = document.createElement('div'); btns.style.cssText = 'display:flex;border-top:1px solid #EBEBEB';
+      const mk = (label, val, bold, sep) => {
+        const b = document.createElement('div'); b.textContent = label;
+        b.style.cssText = 'flex:1;padding:12px 0;font-size:16px;color:#576B95;cursor:pointer;-webkit-tap-highlight-color:transparent' + (bold ? ';font-weight:600' : '') + (sep ? ';border-right:1px solid #EBEBEB' : '');
+        b.onclick = () => { wrap.remove(); const res = { confirm: val, cancel: !val }; try { o && o.success && o.success(res); o && o.complete && o.complete(res); } catch (e) {} };
+        btns.appendChild(b);
+      };
+      const showCancel = !(o && o.showCancel === false);
+      if (showCancel) mk((o && o.cancelText) || '取消', false, false, true);
+      mk((o && o.confirmText) || '确定', true, true, false);
+      box.appendChild(btns); wrap.appendChild(box); host.appendChild(wrap);
+    },
     showLoading() {}, hideLoading() {},
     showShareMenu() {}, hideShareMenu() {},
     stopPullDownRefresh() {},
@@ -89,12 +123,20 @@
       catch (e) { f = null; if (!evalCache['__fail_' + expr]) { evalCache['__fail_' + expr] = 1; console.warn('EXPR COMPILE FAIL:', expr.slice(0, 160)); } }
       evalCache[expr] = f;
     }
-    if (f === null) return '';
-    try { const v = f(scope); return v === undefined || v === null ? '' : v; } catch (e) { if (!evalCache['__fail_' + expr]) { evalCache['__fail_' + expr] = 1; console.warn('EXPR FAIL:', expr.slice(0, 140)); } return ''; }
+    if (f === null) return undefined;
+    try { return f(scope); } catch (e) { if (!evalCache['__fail_' + expr]) { evalCache['__fail_' + expr] = 1; console.warn('EXPR FAIL:', expr.slice(0, 140)); } return undefined; }
   }
   function evalText(text, scope) {
     if (text.indexOf('{{') < 0) return text;
-    return text.replace(/\{\{([^}]+)\}\}/g, (_, e) => String(evalExpr(e.trim(), scope)));
+    return text.replace(/\{\{([^}]+)\}\}/g, (_, e) => { const v = evalExpr(e.trim(), scope); return v == null ? '' : String(v); });
+  }
+  /* 属性求值：纯表达式（值整体就是一个 {{...}}）保留原始类型（布尔/数字/null），
+   * 混合文本才做字符串插值 —— 对齐 WXML 语义（show="{{x}}" 传的是真布尔） */
+  function evalAttr(v, scope) {
+    if (typeof v !== 'string') return v;
+    const m = /^\{\{([\s\S]+)\}\}$/.exec(v.trim());
+    if (m && m[1].indexOf('{{') < 0) return evalExpr(m[1], scope);
+    return evalText(v, scope);
   }
 
   /* ---------- 组件注册 ---------- */
@@ -155,6 +197,19 @@
     try { return renderNodeInner(n, scope, page, parent); } finally { __depth--; __path.pop(); }
   }
   function renderNodeInner(n, scope, page, parent) {
+    /* wx:for：逐项克隆渲染（wx:if 每项再判，与 WXML 语义一致） */
+    if (n.wfor !== undefined) {
+      const list = evalExpr(n.wfor, scope);
+      const arr = list == null ? [] : (Array.isArray(list) ? list : Object.keys(list));
+      const itemName = n.witem || 'item', idxName = n.windex || 'index';
+      const plain = { tag: n.tag, attrs: n.attrs, children: n.children, on: n.on, chain: n.chain, wif: n.wif };
+      for (let i = 0; i < arr.length; i++) {
+        const cs = Object.create(scope);
+        cs[itemName] = arr[i]; cs[idxName] = i;
+        renderNode(plain, cs, page, parent);
+      }
+      return;
+    }
     if (n.wif !== undefined) {
       let chosen = null;
       if (evalExpr(n.wif, scope)) chosen = n;
@@ -167,9 +222,14 @@
     /* 组件？ */
     if (compDefs[n.tag] || (META.compMeta[n.tag])) return renderComponent(n, scope, page, parent);
     let el;
-    if (n.tag === 'w2w-slot') {
+    if (n.tag === 'slot' || n.tag === 'w2w-slot') {
       const kids = page.__slotChildren;
-      if (kids) { const f = document.createDocumentFragment(); for (const c of kids) renderNode(c, page.__slotScope, page, f); parent.appendChild(f); }
+      if (kids) { const f = document.createDocumentFragment(); for (const c of kids) renderNode(c, page.__slotScope, page.__slotCtx || page, f); parent.appendChild(f); }
+      return;
+    }
+    if (n.tag === 'block') {
+      /* block 不产生盒子：直接把子节点铺进父级（display:contents 在部分嵌套下会双重绘制） */
+      if (n.children && n.children.length) renderChildren(n.children, scope, page, parent);
       return;
     }
     const tag = ({ view: 'div', text: 'span', block: 'span', image: 'img', 'scroll-view': 'div', swiper: 'div', 'swiper-item': 'div' })[n.tag] || (n.tag === 'button' ? 'button' : n.tag);
@@ -179,35 +239,53 @@
     if (n.tag === 'scroll-view') { el.style.overflowY = 'auto'; }
     /* 属性 */
     for (const k of Object.keys(n.attrs)) {
-      let v = evalText(n.attrs[k], scope);
-      if (k === 'src' && /cloud:\/\//.test(v)) { v = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect width="100%" height="100%" fill="#E7DFCE"/><circle cx="50%" cy="46%" r="34" fill="#D8CBB0"/></svg>'); }
-      if (k === 'src' && v && !/^(https?:|data:|\/)/.test(v) && !v.includes('{{')) { /* 包内相对路径保持 */ }
+      let v = evalAttr(n.attrs[k], scope);
+      if (v == null) v = '';
+      if (k === 'src' && v && !/^(https?:|data:|blob:)/.test(v)) v = resolveSrc(v);
       if (k === 'style') el.style.cssText += (el.style.cssText ? ';' : '') + v;
       else if (k === 'class') el.setAttribute('class', v);
       else if (k === 'value') { el.value = v; el.setAttribute('value', v); }
-      else if (k === 'src' && tag === 'img') { el.src = v || ''; }
+      else if (k === 'src' && tag === 'img') { const rs = resolveSrc(v); if (rs) el.src = rs; }
       else if (k.startsWith('data-')) el.setAttribute(k, v);
       else if (['placeholder', 'type', 'mode', 'name', 'id', 'maxlength', 'confirm-type', 'disabled'].includes(k)) { if (v !== '') el.setAttribute(k, v); if (k === 'disabled' && v) el.disabled = true; }
     }
     /* 事件 */
     if (n.on) {
       for (const ev of Object.keys(n.on)) {
+        if (ev === 'scroll' || ev === 'scrolltolower' || ev === 'scrolltoupper') continue; /* scroll-view 专属，渲染后统一挂 */
         const handlerName = evalText(n.on[ev], scope).replace(/\(.*$/, '');
-        const domEv = ({ tap: 'click', input: 'input', confirm: 'keydown', change: 'change', longpress: 'contextmenu' })[ev] || ev;
+        const domEv = ({ tap: 'click', input: 'input', confirm: 'keydown', change: 'change', longpress: 'contextmenu', focus: 'focus', blur: 'blur' })[ev] || ev;
         el.addEventListener(domEv === 'keydown' ? 'keydown' : domEv, e => {
           if (domEv === 'keydown' && !(e.key === 'Enter')) return;
           const dataset = {};
-          for (const a of Object.keys(n.attrs)) if (a.startsWith('data-')) dataset[a.slice(5).replace(/-(\w)/g, (_, c) => c.toUpperCase())] = evalText(n.attrs[a], scope);
+          for (const a of Object.keys(n.attrs)) if (a.startsWith('data-')) dataset[a.slice(5).replace(/-(\w)/g, (_, c) => c.toUpperCase())] = evalAttr(n.attrs[a], scope);
           const fn = page[handlerName] || (page.__methods && page.__methods[handlerName]);
           if (typeof fn === 'function') fn.call(page, { currentTarget: { dataset }, detail: { value: el.value != null && (domEv === 'input' || domEv === 'keydown') ? el.value : undefined }, target: { dataset } });
           if (domEv === 'keydown') e.preventDefault && e.preventDefault();
         });
       }
     }
+    /* 输入法组合期：挂起页面重渲，防止打断拼音/候选词 */
+    if (n.tag === 'input' || n.tag === 'textarea') {
+      el.addEventListener('compositionstart', () => { el.__composing = true; page.__suspendRender = true; });
+      el.addEventListener('compositionend', () => { el.__composing = false; page.__suspendRender = false; Promise.resolve().then(() => page.__render && page.__render()); });
+    }
     parent.appendChild(el);
     if (n.children && n.children.length) {
       if (n.tag === 'textarea') { /* textarea 子文本做默认值 */ }
       else renderChildren(n.children, scope, page, el);
+    }
+    if (n.tag === 'scroll-view' && n.on && (n.on.scroll || n.on.scrolltolower)) {
+      let sraf = 0;
+      el.addEventListener('scroll', () => {
+        if (sraf) return;
+        sraf = requestAnimationFrame(() => {
+          sraf = 0;
+          const d = { scrollTop: el.scrollTop, scrollHeight: el.scrollHeight };
+          if (n.on.scroll) { const fn = page[n.on.scroll]; if (typeof fn === 'function') fn.call(page, { detail: d, currentTarget: { dataset: {} } }); }
+          if (n.on.scrolltolower && el.scrollTop + el.clientHeight >= el.scrollHeight - 6) { const f2 = page[n.on.scrolltolower]; if (typeof f2 === 'function') f2.call(page, { detail: d, currentTarget: { dataset: {} } }); }
+        });
+      });
     }
   }
   function renderComponent(n, scope, page, parent) {
@@ -215,11 +293,11 @@
     if (!def) return;
     const merged = mergeBehaviors(def);
     const data = JSON.parse(JSON.stringify(merged.data || {}));
-    /* props：属性求值（page scope）→ properties 定义 */
+    /* props：属性求值（定义方 scope）→ properties 定义 */
     const props = {};
     for (const k of Object.keys(n.attrs)) {
       if (/^(bind|catch)/.test(k)) continue;
-      props[k] = evalText(n.attrs[k], scope);
+      props[k] = evalAttr(n.attrs[k], scope);
     }
     for (const k of Object.keys(def.properties || {})) {
       const pd = def.properties[k];
@@ -228,6 +306,10 @@
     Object.assign(data, props);
     const inst = {
       __kind: 'component', __def: def, data, __vnode: n, __parentPage: page, __props: props,
+      /* slot 内容归「模板定义方」：children 在定义方模板里写的，事件/求值都用定义方上下文 */
+      __slotChildren: n.children && n.children.length ? n.children : null,
+      __slotScope: scope,
+      __slotCtx: page,
       setData(patch) {
         Object.assign(this.data, patch);
         const obs = def.observers || {};
@@ -235,7 +317,6 @@
         rerenderInstance(this);
       },
       triggerEvent(name, detail) {
-        const ev = 'bind' + name;
         const handlerName = n.on && n.on[name];
         if (handlerName) { const fn = page[handlerName]; if (typeof fn === 'function') fn.call(page, { detail: detail, currentTarget: { dataset: {} } }); }
       },
@@ -253,12 +334,8 @@
   function renderInstance(inst) {
     const host = inst.__el; if (!host) return;
     host.innerHTML = '';
-    const slotChildren = inst.__vnode.children && inst.__vnode.children.length ? inst.__vnode.children : null;
-    const page = inst.__parentPage;
-    page.__slotChildren = slotChildren; page.__slotScope = page.data;
-    const scope = inst.data;
-    for (const c of inst.__def && META.compMeta ? findTemplate(inst) : []) renderNode(c, scope, page, host);
-    delete page.__slotChildren; delete page.__slotScope;
+    /* 组件模板的上下文 = 组件实例自己（事件/嵌套组件回调都归组件），slot 节点读 inst.__slotChildren */
+    for (const c of findTemplate(inst)) renderNode(c, inst.data, inst, host);
   }
   function findTemplate(inst) {
     /* 找到该组件的模板：从 compMeta 反查（编译期已按 tag 收录） */
@@ -312,6 +389,7 @@
       const keepScroll = el.scrollTop;
       const active = document.activeElement;
       const focusIdx = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') ? [...document.querySelectorAll('input,textarea')].indexOf(active) : -1;
+      compInstances.clear(); /* 上一轮组件实例随 DOM 一起丢弃 */
       el.innerHTML = '';
       for (const n of META.pageMeta[route].tpl) renderNode(n, inst.data, inst, el);
       /* 组件实例属于本页渲染 —— 上面 renderNode 内已创建 */
@@ -319,6 +397,9 @@
       else TABB.innerHTML = '';
       el.scrollTop = keepScroll;
       if (focusIdx >= 0) { const el2 = [...document.querySelectorAll('input,textarea')][focusIdx]; if (el2) { el2.focus(); try { el2.setSelectionRange(el2.value.length, el2.value.length); } catch (e) {} } }
+      /* scroll-into-view：对齐 scroll-view 锚点 */
+      const siv = inst.data.scrollIntoView || inst.data.scrollTo;
+      if (siv && typeof siv === 'string') { const tgt = el.querySelector('[id="' + siv + '"]'); if (tgt) try { tgt.scrollIntoView({ behavior: 'smooth', block: 'end' }); } catch (e) {} }
     };
     /* 顶层函数：生命周期 + 自定义方法（Page 选项全平铺） */
     for (const k of Object.keys(def)) {
@@ -327,34 +408,40 @@
     }
     /* behaviors 生命周期 */
     const lifetimes = merged.lifetimes || {};
-    inst.setData = inst.setData.bind(inst);
-    /* 绑定渲染调度 */
-    inst.__schedule = () => inst.__render();
-    /* 拦截 setData 调度 */
-    const origSet = inst.setData;
-    inst.setData = patch => { origSet(patch); };
-    function scheduleRender(i) { Promise.resolve().then(() => i.__render && i.__render()); }
-    /* 覆盖：makeInstance 里的 scheduleRender 引用全局 —— 这里重新接 */
     inst.setData = function (patch) {
       Object.assign(this.data, patch);
       const obs = def.observers || {};
       for (const k of Object.keys(patch)) if (obs[k]) try { obs[k].call(this, this.data[k]); } catch (e) {}
-      Promise.resolve().then(() => this.__render && this.__render());
+      if (this.__suspendRender) return; /* IME 组合中：只记账不重渲，避免打断输入法 */
+      if (this.__renderPending) return;
+      this.__renderPending = true;
+      Promise.resolve().then(() => { this.__renderPending = false; this.__render && this.__render(); });
     };
     return inst;
   }
   function scheduleRender(inst) { Promise.resolve().then(() => inst.__render && inst.__render()); }
 
+  /* ---------- 组件 JS 执行（compMeta 收录的全部自定义组件） ---------- */
+  function setupComponents() {
+    for (const tag of Object.keys(META.compMeta)) {
+      const meta = META.compMeta[tag];
+      const src = BUNDLE[meta.base + '.js'];
+      if (!src) continue;
+      let def = null;
+      const saved = window.Component;
+      window.Component = o => { def = o; return o; };
+      try {
+        new Function('module', 'exports', 'Component', 'Behavior', 'require', 'getApp', 'wx', src)({}, {}, window.Component, window.Behavior, requireFrom(meta.base), window.getApp, wx);
+      } catch (e) { console.error('[w2w] component load fail', tag, e && e.message); }
+      window.Component = saved;
+      if (def) { def.__tag = tag; compDefs[tag] = def; }
+    }
+  }
+
   /* ---------- 自定义 tabbar ---------- */
   let tabbarInst = null;
   function setupTabbar() {
-    if (!BUNDLE['custom-tab-bar/index.js']) return;
-    /* 用 Component 定义跑出实例 */
-    let def = null;
-    const saved = window.Component;
-    window.Component = o => { def = o; return o; };
-    new Function('module', 'exports', 'Component', 'require', BUNDLE['custom-tab-bar/index.js'])({}, {}, window.Component, requireFrom('custom-tab-bar/index.js'));
-    window.Component = saved;
+    const def = compDefs['custom-tab-bar'] || null;
     if (!def) return;
     const data = JSON.parse(JSON.stringify(def.data || {}));
     const inst = {
@@ -363,6 +450,7 @@
       ...def.methods
     };
     tabbarInst = inst;
+    if (typeof def.attached === 'function') try { def.attached.call(inst); } catch (e) {}
     window.getApp && (getApp().__tabbar = inst);
     renderTabbar(inst, def);
   }
@@ -383,6 +471,18 @@
     for (const n of tpl) renderNodeSelf(n, scope, inst, inst.__el);
   }
   function renderNodeSelf(n, scope, inst, parent) {
+    if (n.wfor !== undefined) {
+      const list = evalExpr(n.wfor, scope);
+      const arr = list == null ? [] : (Array.isArray(list) ? list : Object.keys(list));
+      const itemName = n.witem || 'item', idxName = n.windex || 'index';
+      const plain = { tag: n.tag, attrs: n.attrs, children: n.children, on: n.on, wif: n.wif };
+      for (let i = 0; i < arr.length; i++) {
+        const cs = Object.create(scope);
+        cs[itemName] = arr[i]; cs[idxName] = i;
+        renderNodeSelf(plain, cs, inst, parent);
+      }
+      return;
+    }
     if (n.tag === '#text') { const t = evalText(n.text, scope); if (t) parent.appendChild(document.createTextNode(t)); return; }
     if (n.wif !== undefined && !evalExpr(n.wif, scope)) return;
     let el;
@@ -406,35 +506,43 @@
   }
 
   /* ---------- 导航 ---------- */
-  function mountRoot(route) {
+  function parseRoute(url) {
+    const s = String(url || '').replace(/^\//, '');
+    const qi = s.indexOf('?');
+    const query = {};
+    if (qi >= 0) new URLSearchParams(s.slice(qi + 1)).forEach((v, k) => { query[k] = v; });
+    return { route: qi >= 0 ? s.slice(0, qi) : s, query };
+  }
+  const tabCache = {}; /* 真机 tab 页常驻：缓存实例，切换只挂回 + onShow */
+  function mountRoot(route, query) {
     rootRoute = route;
     rootPage = createPage(route, true);
     if (!rootPage) return;
+    if (META.pageMeta[route] && META.pageMeta[route].isTab && tabbarInst) rootPage.__tabbar = tabbarInst;
     ROOT.innerHTML = ''; ROOT.appendChild(rootPage.__el);
     rootPage.__onLoadExists = typeof rootPage.onLoad === 'function';
-    if (typeof rootPage.onLoad === 'function') try { rootPage.onLoad({}); rootPage.__onLoadRan = true; } catch (e) { rootPage.__onLoadErr = String(e && e.message || e); }
+    if (typeof rootPage.onLoad === 'function') try { rootPage.onLoad(query || {}); rootPage.__onLoadRan = true; } catch (e) { rootPage.__onLoadErr = String(e && e.message || e); }
     rootPage.__render();
     if (typeof rootPage.onShow === 'function') try { rootPage.onShow(); } catch (e) {}
-    /* 页面 onShow 时同步 tabbar selected */
+    if (META.pageMeta[route] && META.pageMeta[route].isTab) tabCache[route] = rootPage;
   }
   function pushOverlay(url) {
-    const route = url.replace(/^\//, '').split('?')[0];
+    const { route, query } = parseRoute(url);
     const inst = createPage(route);
     if (!inst) return;
     stack.push(inst);
     const wrap = document.createElement('div'); wrap.className = 'w2w-overlay-page'; wrap.style.cssText = 'position:absolute;inset:0;overflow-y:auto;background:#F7F6F4;z-index:' + (20 + stack.length);
     wrap.appendChild(inst.__el); OVER.appendChild(wrap);
-    if (typeof inst.onLoad === 'function') try { inst.onLoad({}); } catch (e) {}
+    if (typeof inst.onLoad === 'function') try { inst.onLoad(query || {}); } catch (e) { console.error('[w2w] onLoad fail', route, e && e.message); }
     inst.__render();
     if (typeof inst.onShow === 'function') try { inst.onShow(); } catch (e) {}
   }
   function replaceOverlay(url) {
-    const route = url.replace(/^\//, '').split('?')[0];
-    if (stack.length) {
-      const old = stack.pop();
-      if (OVER.lastChild) OVER.removeChild(OVER.lastChild);
-      if (typeof old.onUnload === 'function') try { old.onUnload(); } catch (e) {}
-    }
+    const { route, query } = parseRoute(url);
+    if (!stack.length) { mountRoot(route, query); return; } /* 根页 redirectTo：换根 */
+    const old = stack.pop();
+    if (OVER.lastChild) OVER.removeChild(OVER.lastChild);
+    if (typeof old.onUnload === 'function') try { old.onUnload(); } catch (e) {}
     pushOverlay(url);
   }
   function popOverlay() {
@@ -444,13 +552,26 @@
     if (typeof old.onUnload === 'function') try { old.onUnload(); } catch (e) {}
   }
   function switchTab(url) {
-    const route = url.replace(/^\//, '').split('?')[0];
+    const { route } = parseRoute(url);
     while (stack.length) popOverlay();
-    if (rootRoute === route) { if (typeof rootPage.onShow === 'function') rootPage.onShow(); return; }
+    if (tabCache[route]) {
+      if (rootRoute === route) { if (typeof rootPage.onShow === 'function') try { rootPage.onShow(); } catch (e) {} return; }
+      if (rootPage && rootPage.__el.parentNode) rootPage.__el.parentNode.removeChild(rootPage.__el);
+      rootRoute = route; rootPage = tabCache[route];
+      ROOT.appendChild(rootPage.__el);
+      rootPage.__render();
+      if (typeof rootPage.onShow === 'function') try { rootPage.onShow(); } catch (e) {}
+      return;
+    }
     mountRoot(route);
   }
-  function reLaunch(url) { switchTab(url); }
-  window.__nav = { pushOverlay, switchTab, mountRoot };
+  function reLaunch(url) {
+    const { route, query } = parseRoute(url);
+    while (stack.length) popOverlay();
+    for (const k of Object.keys(tabCache)) delete tabCache[k];
+    mountRoot(route, query);
+  }
+  window.__nav = { pushOverlay, replaceOverlay, popOverlay, switchTab, mountRoot, reLaunch };
 
   /* ---------- toast host ---------- */
   const tEl = document.createElement('div');
@@ -463,6 +584,7 @@
   /* ---------- 启动 ---------- */
   for (const p of META.pages) window.registerPageSource(p, BUNDLE[p + '.js']);
   window.registerPageSource('app.js', BUNDLE['app.js']);
+  setupComponents();
   setupTabbar();
   mountRoot(META.pages[0]);
   /* app.json 入口一般是 launch —— 若 launch 自动跳转，交给页面逻辑 */

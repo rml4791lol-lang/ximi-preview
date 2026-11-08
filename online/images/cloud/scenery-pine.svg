@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="1680" viewBox="0 0 780 1680">
+  <defs>
+    <linearGradient id="pp" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F3EDE2"/><stop offset=".55" stop-color="#EAE1D2"/><stop offset="1" stop-color="#DDD2BE"/>
+    </linearGradient>
+    <linearGradient id="mist" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#EAE1D2" stop-opacity="0"/><stop offset="1" stop-color="#F3EDE2"/>
+    </linearGradient>
+  </defs>
+  <rect width="780" height="1680" fill="url(#pp)"/>
+  <path d="M-40 1180 Q120 1010 260 1100 T560 1060 T820 1150 V1680 H-40 Z" fill="#B7AA92" opacity=".55"/>
+  <path d="M-40 1300 Q180 1150 360 1250 T820 1240 V1680 H-40 Z" fill="#8F826B" opacity=".6"/>
+  <rect y="1150" width="780" height="530" fill="url(#mist)"/>
+  <g stroke="#2E2824" fill="none" stroke-linecap="round">
+    <path d="M610 1120 C596 990 600 850 580 700" stroke-width="14"/>
+    <path d="M584 780 C520 760 470 716 452 640 C520 660 566 700 588 748" stroke-width="9"/>
+    <path d="M586 866 C660 850 706 800 716 726 C650 748 606 796 588 840" stroke-width="9"/>
+    <path d="M592 972 C528 950 490 906 478 846 C540 868 576 908 594 948" stroke-width="8"/>
+    <path d="M300 1290 C410 1270 520 1240 586 1180" stroke-width="7" opacity=".8"/>
+    <path d="M120 1420 C260 1400 420 1370 540 1300" stroke-width="5" opacity=".5"/>
+  </g>
+  <g fill="#2E2824" opacity=".85">
+    <ellipse cx="470" cy="632" rx="66" ry="17" transform="rotate(-16 470 632)"/>
+    <ellipse cx="700" cy="716" rx="60" ry="15" transform="rotate(14 700 716)"/>
+    <ellipse cx="494" cy="840" rx="56" ry="14" transform="rotate(-14 494 840)"/>
+    <ellipse cx="596" cy="688" rx="40" ry="12"/>
+  </g>
+  <g transform="translate(60,1500)">
+    <rect x="0" y="0" width="34" height="34" rx="6" fill="#A94434" opacity=".9"/>
+    <text x="17" y="24" font-family="serif" font-size="19" fill="#F6F1E6" text-anchor="middle">安</text>
+  </g>
+</svg>
