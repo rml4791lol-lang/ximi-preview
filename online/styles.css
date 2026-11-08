@@ -1733,5 +1733,5 @@ input,textarea{font-family:inherit}
 
  #pg-pages-moodcal-moodcal{background:radial-gradient(620.00px 420.00px at 88% -6%,#F4EAE4 0%,transparent 62%),#F7F6F4}/* 表情脸尺寸（原 .icn 基类已废弃） */ #pg-pages-moodcal-moodcal .mrow .mw .mface{width:30.00px;height:30.00px;border-radius:50%;display:block} #pg-pages-moodcal-moodcal .c-moods .m .mface{width:30.00px;height:30.00px;padding:0;border-radius:50%;display:block} #pg-pages-moodcal-moodcal .c-moods .m.ff.on .mface{outline:2.50px solid var(--rose-deep);outline-offset:2.00px;transform:scale(1.14)}
 
-#tabbar-host{position:fixed;left:0;right:0;bottom:0;z-index:60}
+#tabbar-host{position:fixed;left:0;right:0;bottom:0;z-index:15}
 .w2w-page{min-height:100%;position:relative}
